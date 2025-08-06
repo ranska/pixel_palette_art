@@ -1,23 +1,25 @@
-
+# __init__.py (racine de votre extension)
 """
-Pixel Palette Art - Custom Node pour ComfyUI
-Extracteur de palette de couleurs pour images GIF indexées et chargeur de palettes GIMP
+Extension ComfyUI pour les palettes de pixel art
 """
 
-from .nodes import NODE_CLASS_MAPPINGS as NODES_MAPPING, NODE_DISPLAY_NAME_MAPPINGS as NODES_DISPLAY
-from .gimp_palette_loader import GIMP_NODE_CLASS_MAPPINGS, GIMP_NODE_DISPLAY_NAME_MAPPINGS
+from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode
+#  from . import PixelPaletteExtractor
 
-# Combiner tous les mappings
-NODE_CLASS_MAPPINGS = {}
-NODE_CLASS_MAPPINGS.update(NODES_MAPPING)
-NODE_CLASS_MAPPINGS.update(GIMP_NODE_CLASS_MAPPINGS)
+# Configuration ComfyUI
+NODE_CLASS_MAPPINGS = {
+    "GimpPaletteLoader": GimpPaletteLoaderNode,
+    "PaletteFormatter": PaletteFormatterNode,
+    #  "PixelPaletteExtractor": PixelPaletteExtractor,
+}
 
-NODE_DISPLAY_NAME_MAPPINGS = {}
-NODE_DISPLAY_NAME_MAPPINGS.update(NODES_DISPLAY)
-NODE_DISPLAY_NAME_MAPPINGS.update(GIMP_NODE_DISPLAY_NAME_MAPPINGS)
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "GimpPaletteLoader": "GIMP Palette Loader",
+    "PaletteFormatter": "Palette Formatter",
+    #  "PixelPaletteExtractor": "Palette extractor",
+}
 
-# Export des mappings pour ComfyUI
-__all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
-
-# Informations du module
-#  WEB_DIRECTORY = "./web"
+# Métadonnées de l'extension
+__version__     = "0.0.3"
+__author__      = "Votre nom"
+__description__ = "Extension pour gérer les palettes de pixel art dans ComfyUI"
