@@ -1,0 +1,10 @@
+# Inclut les dépendances de production
+-r requirements.txt
+
+# Dépendances de test BDD
+mamba
+expects
+
+# Autres outils de dev (optionnel)
+# black>=22.0.0
+# flake8>=4.0.0

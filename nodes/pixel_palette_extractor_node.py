@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-class PixelPaletteExtractor:
+class PixelPaletteExtractorNode:
     """
     Un node ComfyUI qui extrait la palette de couleurs d'une image GIF indexée
     et génère une image de palette avec option d'affichage des index.
@@ -219,12 +219,3 @@ class PixelPaletteExtractor:
                 draw.text((text_x, text_y), text, fill=(0, 0, 0), font=font)
         
         return palette_img
-
-# Mappage des nodes pour ComfyUI
-NODE_CLASS_MAPPINGS = {
-    "PixelPaletteExtractor": PixelPaletteExtractor
-}
-
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "PixelPaletteExtractor": "Pixel Palette Extractor"
-}
