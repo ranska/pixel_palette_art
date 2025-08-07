@@ -19,3 +19,21 @@ __if you know how to upload a file please PR or open an issue__
 
 
 https://github.com/45uee/ComfyUI-Color_Transfer
+
+# Contribute 
+
+first install dev dependency
+
+```
+pip install -r requirements-dev.txt
+```
+
+Then this project is very new but I want as a rubist to keep my BDD best practice.
+So here I choose https://github.com/nestorsalceda/mamba who look near https://rspec.info/ .
+Please if you know how to do a good BDD in python open an issue.
+
+to run the test.
+```
+mamba spec/
+```
+Please make all test go green before asking for a PR.
