@@ -3,7 +3,7 @@
 Extension ComfyUI pour les palettes de pixel art
 """
 
-from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode
+from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode, PixelPaletteExtractorNode
 #  from . import PixelPaletteExtractor
 
 # Configuration ComfyUI
