@@ -17,9 +17,6 @@ with description('PixelColor') as self:
             #  print(color.__class__)
             expect(color.r).to(equal(0))
 
-
-
-
     with context('#to_hex'):
         with it('renvoie la couleur au format hexadécimal'):
             pixel = PixelColor(255, 128, 64)
