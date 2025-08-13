@@ -6,7 +6,7 @@ import os
 
 # Ajout du chemin parent pour importer la lib
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from lib.pixel_palette import PixelPalette, Color
+from lib.pixel_palette import PixelPalette, PixelColor
 
 #
 with description('PixelPalette') as self:
@@ -106,32 +106,32 @@ ff8000
             expect(rouge.rgb_tuple).to(equal((255, 0, 0)))
             expect(rouge.name).to(equal('Rouge'))
     
-    with context('Classe Color'):
+    with context('Classe PixelColor'):
         
         with it('valide les valeurs RGB'):
             # Valeurs normales
-            color = Color(255, 128, 0, "Orange")
+            color = PixelColor(255, 128, 0, "Orange")
             expect(color.r).to(equal(255))
             expect(color.g).to(equal(128))
             expect(color.b).to(equal(0))
             
             # Valeurs hors limites
-            color_clamped = Color(300, -10, 256, "Test")
+            color_clamped = PixelColor(300, -10, 256, "Test")
             expect(color_clamped.r).to(equal(255))  # Max 255
             expect(color_clamped.g).to(equal(0))    # Min 0
             expect(color_clamped.b).to(equal(255))  # Max 255
         
         with it('calcule les propriétés correctement'):
-            color = Color(255, 128, 0, "Orange")
+            color = PixelColor(255, 128, 0, "Orange")
             
             expect(color.hex).to(equal('#ff8000'))
             expect(color.rgb_tuple).to(equal((255, 128, 0)))
             expect(color.rgb_normalized).to(equal((1.0, 0.5019607843137255, 0.0)))
         
         with it('calcule la distance entre couleurs'):
-            rouge = Color(255, 0, 0)
-            vert = Color(0, 255, 0)
-            rouge_proche = Color(250, 5, 5)
+            rouge = PixelColor(255, 0, 0)
+            vert = PixelColor(0, 255, 0)
+            rouge_proche = PixelColor(250, 5, 5)
             
             distance_rouge_vert = rouge.distance_to(vert)
             distance_rouge_proche = rouge.distance_to(rouge_proche)
@@ -162,7 +162,7 @@ ff8000
             expect(failure).to(be_false)
         
         with it('trouve la couleur la plus proche'):
-            target = Color(250, 10, 10)  # Proche du rouge
+            target = PixelColor(250, 10, 10)  # Proche du rouge
             closest, index = self.palette.find_closest_color(target)
             
             expect(closest.name).to(equal("Rouge"))
@@ -316,7 +316,7 @@ abc def ghi Pas des nombres
         
         with it('trouve la couleur proche sur palette vide lève une erreur'):
             empty_palette = PixelPalette()
-            target = Color(255, 0, 0)
+            target = PixelColor(255, 0, 0)
             
             def find_closest():
                 return empty_palette.find_closest_color(target)
