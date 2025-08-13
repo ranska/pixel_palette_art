@@ -11,7 +11,13 @@ You can find a lot of gpl here [lospec](https://lospec.com/)
 
 __if you know how to upload a file please PR or open an issue__
 
-![Description de l'image](docs/gimp_gpl_loader.png)
+![palette node](docs/gimp_gpl_loader.png)
+
+## Color creation
+
+You can create rgb color, and export it as text or image.
+
+![color node](docs/create_color.png)
 
 
 # Inspiration
