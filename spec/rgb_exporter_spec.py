@@ -14,7 +14,7 @@ class MockPixelColor:
     """Mock de PixelColor pour les specs"""
     def __init__(self, r, g, b, name=""):
         self.r = r
-        self.g = g  
+        self.g = g
         self.b = b
         self.name = name
 
