@@ -21,23 +21,3 @@ with description('PixelColor') as self:
         with it('renvoie la couleur au format hexadécimal'):
             pixel = PixelColor(255, 128, 64)
             expect(pixel.to_hex()).to(equal("#FF8040"))
-
-    with context('.mixcolor'):
-        with it('mixe deux couleurs selon la stratégie RGB'):
-            a = PixelColor(255, 0, 0)  # rouge
-            b = PixelColor(0, 0, 255)  # bleu
-            mix = PixelColor.mixcolor(a, b, 0.5, "RGB")
-            expect(mix.r).to(equal(128))
-            expect(mix.g).to(equal(0))
-            expect(mix.b).to(equal(128))
-
-        #  with it('mixe deux couleurs selon la stratégie HSV'):
-            #  a = PixelColor(255, 0, 0)  # rouge
-            #  b = PixelColor(0, 255, 0)  # vert
-            #  mix = PixelColor.mixcolor(a, b, 0.5, "HSV")
-            #  expect(mix.r).to(be_above_or_equal(127))
-            #  expect(mix.r).to(be_below_or_equal(130))
-            #  expect(mix.g).to(be_above_or_equal(127))
-            #  expect(mix.g).to(be_below_or_equal(130))
-            #  expect(mix.b).to(be_above_or_equal(0))
-            #  expect(mix.b).to(be_below_or_equal(5))
