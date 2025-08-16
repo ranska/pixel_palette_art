@@ -7,6 +7,7 @@ from pathlib import Path
 #
 from .color import mix_strategy
 from .color.rgb_exporter import RGBExporter
+from .color.color_space_context import ColorSpaceContext
 
 
 @dataclass
@@ -16,6 +17,8 @@ class PixelColor:
     g:     int
     b:     int
     name:  str = ""
+    #
+    color_space:  str = "rgb"
 
     def __post_init__(self):
         # Validation des valeurs RGB
@@ -23,6 +26,7 @@ class PixelColor:
         self.g         = max(0, min(255, int(self.g)))
         self.b         = max(0, min(255, int(self.b)))
         self._exporter = None
+
 
     @property
     def exporter(self):
@@ -65,3 +69,8 @@ class PixelColor:
         method      = getattr(mix_strategy, method_name)
 
         return PixelColor(*method(a, b, ratio))
+
+    #
+    #
+    def using_color_space(self, new_color_space):
+        return ColorSpaceContext(self, new_color_space)
