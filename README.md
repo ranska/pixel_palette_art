@@ -47,5 +47,5 @@ Please make all test go green before asking for a PR.
 
 ## git specific
 
-This repo use ![git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html)
+This repo use [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html)
 and `devlop` is set as default branch.
