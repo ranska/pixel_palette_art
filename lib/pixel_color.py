@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 #
 from .color import mix_strategy
-from .color.rgb_exporter import RGBExporter
+from .color.color_spaces.rgb.rgb_exporter import RGBExporter
 from .color.color_space_context import ColorSpaceContext
 
 

@@ -3,9 +3,9 @@
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 
-from lib.color.rgb_exporter import RGBExporter
+from lib.color.color_spaces.rgb.rgb_exporter import RGBExporter
 from mamba import description, context, it
 from expects import expect, equal
 
