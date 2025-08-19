@@ -11,6 +11,7 @@ from .rgb.rgb_mixer import RGBMixer
 from ..color_space_context import ColorSpaceContext
 from ..color_space_registry import ColorSpaceRegistry
 # Enregistrement automatique au chargement du module
+
 ColorSpaceRegistry.register('rgb', mixer_class = RGBMixer)
 #  ColorSpaceRegistry.register('rgb', RGBExporter, RGBMixer)
 #  ColorSpaceRegistry.register('hsl', HSLExporter, HSLMixer)
