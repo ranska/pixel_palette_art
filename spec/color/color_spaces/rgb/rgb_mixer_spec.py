@@ -35,4 +35,7 @@ with description('PixelColor') as self:
             expect(color_a.r).to(equal(128))
             expect(color_a.g).to(equal(128))
             expect(color_a.b).to(equal(0))
-            
+
+
+    with context('with default color space'):
+        print("TODO: test with 2nd color_space like hsl")
