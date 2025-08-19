@@ -1,13 +1,16 @@
 
 # lib/pixel_palette.py
+from __future__ import annotations
 import re
-from typing import List, Tuple, Optional, Dict, Any
+from typing      import List, Tuple, Optional, Dict, Any
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib     import Path
 #
 from .color import mix_strategy
-from .color.rgb_exporter import RGBExporter
-from .color.color_space_context import ColorSpaceContext
+from .color.color_spaces.rgb.rgb_exporter import RGBExporter
+from .color.color_space_context  import ColorSpaceContext
+from .color.color_space_registry import ColorSpaceRegistry
+
 
 
 @dataclass
@@ -27,6 +30,10 @@ class PixelColor:
         self.b         = max(0, min(255, int(self.b)))
         self._exporter = None
 
+    def mix_with(self, color: PixelColor, ratio: float = 0.5) -> PixelColor:
+        mixer = ColorSpaceRegistry.get_mixer_class(self.color_space)
+        self.r, self.g, self.b = mixer.mix_with(self, color, ratio)
+        return self
 
     @property
     def exporter(self):

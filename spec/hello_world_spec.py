@@ -10,7 +10,7 @@ with description('hello_world function'):
     with it('should greet World by default'):
         result = hello_world()
         expect(result).to(equal("Hello, World!"))
-        print("hello")
+        #  print("hello")
 
     with it('should greet custom name'):
         result = hello_world("Alice")

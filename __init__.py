@@ -3,7 +3,7 @@
 Extension ComfyUI pour les palettes de pixel art
 """
 
-from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode, PixelPaletteExtractorNode, CreateColorFromRGBNode, ColorFormatterNode, ColorPreviewNode
+from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode, PixelPaletteExtractorNode, CreateColorFromRGBNode, ColorFormatterNode, ColorPreviewNode, MixColorsNode
 #  from . import PixelPaletteExtractor
 
 # Configuration ComfyUI
@@ -14,6 +14,7 @@ NODE_CLASS_MAPPINGS = {
     "CreateColorFromRGBNode": CreateColorFromRGBNode,
     "ColorFormatterNode":     ColorFormatterNode,
     "ColorPreviewNode":       ColorPreviewNode,
+    "MixColorsNode":          MixColorsNode,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -23,6 +24,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CreateColorFromRGBNode": "Create Color From RGB",
     "ColorFormatterNode":     "Color to formatted string",
     "ColorPreviewNode":       "Color to image",
+    "MixColorsNode":          "Mix colors",
 }
 
 # Métadonnées de l'extension

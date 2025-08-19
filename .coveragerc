@@ -1,0 +1,11 @@
+[run]
+source = .
+omit = 
+    */venv/*
+    */tests/*
+    */spec/*
+    */nodes/*
+    __init__.py
+    nodes.py
+    mamba_config.py
+    setup.py
