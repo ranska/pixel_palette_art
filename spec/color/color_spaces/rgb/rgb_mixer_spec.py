@@ -7,6 +7,12 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 
+from lib.color.color_spaces import *  # exécute les registers
+# TODO: cause I'm a python newbe...
+from lib.color.color_spaces.rgb.rgb_mixer import RGBMixer
+from lib.color.color_space_registry import ColorSpaceRegistry
+#
+
 from lib.color.color_spaces.rgb.rgb_exporter import RGBExporter
 from lib.pixel_color import PixelColor
 #
@@ -14,7 +20,15 @@ from mamba import description, context, it
 from expects import expect, equal
 
 
+
+#
+
+
+
 with description('PixelColor') as self:
+
+    with before.each:
+        ColorSpaceRegistry.register('rgb', mixer_class = RGBMixer)
     #
     #
     with context('with default color space'):
@@ -35,7 +49,6 @@ with description('PixelColor') as self:
             expect(color_a.r).to(equal(128))
             expect(color_a.g).to(equal(128))
             expect(color_a.b).to(equal(0))
-
 
     with context('with default color space'):
         print("TODO: test with 2nd color_space like hsl")

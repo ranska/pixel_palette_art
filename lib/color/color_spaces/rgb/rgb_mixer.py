@@ -1,3 +1,5 @@
+from ...color_space_registry import ColorSpaceRegistry
+
 class RGBMixer:
     def mix_with(color_a, a, ratio):
         r = round(color_a.r * (1 - ratio) + a.r * ratio)
@@ -7,3 +9,5 @@ class RGBMixer:
         return r, g, b
 
     # TODO: extract private method mix_channel ?
+
+ColorSpaceRegistry.register('rgb', mixer_class = RGBMixer)

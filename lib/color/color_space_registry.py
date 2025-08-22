@@ -15,6 +15,7 @@ class ColorSpaceRegistry:
             'exporter': exporter_class,
             'mixer': mixer_class
         }
+        #  print(cls._spaces)
 
     @classmethod
     def get_exporter_class(cls, space_name):
