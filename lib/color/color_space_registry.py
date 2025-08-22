@@ -7,15 +7,25 @@ class ColorSpaceRegistry:
 
     @classmethod
     def register(cls, name, exporter_class=None, mixer_class=None):
-        """Enregistre un espace colorimétrique avec composants optionnels."""
+        """Enregistre un espace colorimétrique en fusionnant les composants existants."""
         if exporter_class is None and mixer_class is None:
             raise ValueError("Au moins un exporter ou mixer doit être fourni")
-        
-        cls._spaces[name.lower()] = {
-            'exporter': exporter_class,
-            'mixer': mixer_class
-        }
+
+        key = name.lower()
+        if key not in cls._spaces:
+            cls._spaces[key] = {"exporter": None, "mixer": None}
+
+        if exporter_class is not None:
+            cls._spaces[key]["exporter"] = exporter_class
+        if mixer_class is not None:
+            cls._spaces[key]["mixer"] = mixer_class
+        #
         #  print(cls._spaces)
+
+    @classmethod
+    def reset(cls):
+        """Réinitialise complètement le registre."""
+        cls._spaces.clear()
 
     @classmethod
     def get_exporter_class(cls, space_name):

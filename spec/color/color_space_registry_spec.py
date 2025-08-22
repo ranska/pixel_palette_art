@@ -143,3 +143,30 @@ with description('ColorSpaceRegistry'):
             
             expect(result).to(contain('rgb', 'hsl'))
             expect(len(result)).to(equal(2))
+
+    # TODO: write test for exporter
+    #
+    with context('when merging registrations'):
+        
+        with it('merges exporter and mixer across multiple registrations'):
+            ColorSpaceRegistry.reset()
+            #
+            mock_mixer_rgb = Mock()
+            mock_mixer_hsv = Mock()
+            result = ColorSpaceRegistry._spaces
+            expect(result).to(equal({}))
+
+            ColorSpaceRegistry.register('rgb', mixer_class=mock_mixer_rgb)
+            ColorSpaceRegistry.register('hsv', mixer_class=mock_mixer_hsv)
+
+            result = ColorSpaceRegistry.get_space_info('rgb')
+            expect(result).to(equal({
+                'exporter': None,
+                'mixer':    mock_mixer_rgb
+            }))
+
+            result = ColorSpaceRegistry.get_space_info('hsv')
+            expect(result).to(equal({
+                'exporter': None,
+                'mixer':    mock_mixer_hsv
+            }))

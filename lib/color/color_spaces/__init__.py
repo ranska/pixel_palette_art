@@ -3,6 +3,7 @@
 Initialisation automatique des espaces colorimétriques
 """
 from .rgb.rgb_mixer import RGBMixer
+from .hsv.hsv_mixer import HSVMixer
 #  from .rgb import RGBExporter, RGBMixer
 #  from .hsl import HSLExporter, HSLMixer
 #  from .cmyk import CMYKExporter  # Pas de mixer pour CMYK
