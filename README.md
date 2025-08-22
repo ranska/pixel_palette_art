@@ -24,10 +24,14 @@ You can create rgb color, and export it as text or image.
 The most inportant concept of this custom_nodes pack.
 
 You can mix 2 colors and get a 3rd one.
-For now there is only rgb color_space mixer but I will add more.
+For now there is rgb and hsv color_space mixer but I want to add more.
 
 ![color node](docs/mix_colors.png)
 
+# Roadmap
+
+See issue list.
+The next target are export colors and palettes manipulation.
 
 # Inspiration
 
