@@ -6,7 +6,9 @@ from typing      import List, Tuple, Optional, Dict, Any
 from dataclasses import dataclass
 from pathlib     import Path
 #
-from .color import mix_strategy
+# lib/pixel_color.py
+
+from . import color  # ⚡ force l’exécution de lib/color/__init__.py et donc des registers
 from .color.color_spaces.rgb.rgb_exporter import RGBExporter
 from .color.color_space_context  import ColorSpaceContext
 from .color.color_space_registry import ColorSpaceRegistry
@@ -65,17 +67,6 @@ class PixelColor:
 
     def to_hex(self):
         return "#{:02X}{:02X}{:02X}".format(self.r, self.g, self.b)
-
-    @staticmethod
-    def mixcolor(a, b, ratio, strategy):
-        strategy = strategy.upper()
-        if strategy not in mix_strategy.STRATEGIES:
-            raise ValueError(f"Stratégie inconnue {strategy}")
-
-        method_name = f"strategy_{strategy.lower()}"
-        method      = getattr(mix_strategy, method_name)
-
-        return PixelColor(*method(a, b, ratio))
 
     #
     #
