@@ -2,7 +2,7 @@
 # lib/pixel_palette.py
 import re
 from typing import List, Tuple, Optional, Dict, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from .pixel_color import PixelColor
 
@@ -12,17 +12,56 @@ class PixelPalette:
     Classe métier pour gérer les palettes de couleurs
     Supporte les formats GIMP (.gpl), Adobe (.aco), etc.
     """
+
+    name:   str              = "Untitled Palette"
+    colors: List[PixelColor] = field(default_factory=list)
+
+    @classmethod
+    def create_monochrome(cls, color: PixelColor, count: int, name: Optional[str] = None) -> 'PixelPalette':
+        """
+        Crée une palette monochrome avec une couleur répétée count fois
+
+        Args:
+            color: La couleur de base à répéter
+            count: Le nombre de fois à répéter la couleur
+            name: Nom optionnel de la palette
+
+        Returns:
+            PixelPalette: Une nouvelle palette contenant la couleur répétée
+
+        Raises:
+            ValueError: Si count est inférieur ou égal à 0
+        """
+        if count <= 0:
+            raise ValueError("Le count doit être supérieur à 0")
+
+        # Nom par défaut basé sur la couleur
+        if name is None:
+            color_name = color.name if color.name else color.hex
+            name = f"Palette monochrome - {color_name}"
+
+        # Créer la liste de couleurs
+        colors = []
+        for i in range(count):
+            color_copy = color.create_copy()
+            colors.append(color_copy)
+
+        pixel_palette = cls()
+        #  pixel_palette.name = name
+        pixel_palette.colors = colors
+        return pixel_palette
+
     
-    def __init__(self, raw_content: str = "", source_filename: str = ""):
-        self.raw_content = raw_content
-        self.source_filename = source_filename
+    def __init__(self):
+        #  self.raw_content = raw_content
+        #  self.source_filename = source_filename
         self.colors: List[PixelColor] = []
-        self.metadata: Dict[str, Any] = {}
-        self.format_type = "unknown"
+        #  self.metadata: Dict[str, Any] = {}
+        #  self.format_type = "unknown"
         
         # Parse automatiquement si du contenu est fourni
-        if raw_content.strip():
-            self._parse_content()
+        #  if raw_content.strip():
+            #  self._parse_content()
     
     def _parse_content(self):
         """Parse le contenu selon le format détecté"""
@@ -303,10 +342,10 @@ class PixelPalette:
         """Nombre de couleurs dans la palette"""
         return len(self.colors)
     
-    @property
-    def name(self) -> str:
-        """Nom de la palette"""
-        return self.metadata.get('name', Path(self.source_filename).stem if self.source_filename else "Sans nom")
+    #  @property
+    #  def name(self) -> str:
+        #  """Nom de la palette"""
+        #  return self.metadata.get('name', Path(self.source_filename).stem if self.source_filename else "Sans nom")
     
     @property
     def is_valid(self) -> bool:
@@ -322,8 +361,8 @@ class PixelPalette:
     def __iter__(self):
         return iter(self.colors)
     
-    def __str__(self):
-        return f"PixelPalette('{self.name}', {self.color_count} couleurs, format: {self.format_type})"
+    #  def __str__(self):
+        #  return f"PixelPalette('{self.name}', {self.color_count} couleurs, format: {self.format_type})"
     
-    def __repr__(self):
-        return self.__str__()
+    #  def __repr__(self):
+        #  return self.__str__()
