@@ -48,7 +48,9 @@ class PixelPalette:
     
     def _is_adobe_aco_format(self) -> bool:
         """Détecte si c'est une palette Adobe (binaire)"""
-        return self.raw_content.startswith(b'\x00\x01') if isinstance(self.raw_content, bytes) else False
+        if isinstance(self.raw_content, bytes) and len(self.raw_content) >= 2:
+            return self.raw_content[0] == 0x00 and self.raw_content[1] == 0x01
+        return False
     
     def _parse_gimp_palette(self):
         """Parse une palette GIMP (.gpl)"""
@@ -198,8 +200,58 @@ class PixelPalette:
         def get_brightness(color: PixelColor):
             # Formule de luminosité perceptuelle
             return 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
-        
+
         self.colors.sort(key=get_brightness)
+
+    def create_gradient(self, index1: int, index2: int, color_space: str = "rgb") -> None:
+        """
+        Crée un dégradé entre deux couleurs en modifiant les couleurs existantes entre les index.
+
+        Args:
+            index1: Index de la première couleur (doit être < index2)
+            index2: Index de la deuxième couleur
+            color_space: Espace de couleur pour l'interpolation ("rgb" ou "hsv")
+
+        Raises:
+            ValueError: Si index1 >= index2 ou s'il n'y a pas au moins une couleur entre
+            IndexError: Si les index sont hors limites
+        """
+        # Validation des paramètres
+        if index1 >= index2:
+            raise ValueError("index1 doit être inférieur à index2")
+
+        if index1 < 0 or index2 >= len(self.colors):
+            raise IndexError("Index hors limites")
+
+        # Vérifier qu'il y a au moins une couleur entre les deux
+        if index2 - index1 < 2:
+            raise ValueError("Il doit y avoir au moins une couleur entre index1 et index2")
+
+        # Récupérer les couleurs de départ et d'arrivée
+        start_color = self.colors[index1]
+        end_color = self.colors[index2]
+
+        # Calculer le nombre de couleurs intermédiaires
+        num_intermediate = index2 - index1 - 1
+
+        # Pour chaque couleur intermédiaire
+        for i in range(1, num_intermediate + 1):
+            # Calculer le ratio (de 0.0 à 1.0)
+            ratio = i / (num_intermediate + 1)
+
+            # Calculer l'index de la couleur à modifier
+            current_index = index1 + i
+
+            # Utiliser le mixer approprié selon l'espace de couleur
+            from .color.color_space_registry import ColorSpaceRegistry
+            mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+            # Calculer la nouvelle couleur
+            new_r, new_g, new_b = mixer.mix_with(start_color, end_color, ratio)
+
+            # Mettre à jour la couleur existante (conserver le nom)
+            original_name = self.colors[current_index].name
+            self.colors[current_index] = PixelColor(new_r, new_g, new_b, original_name)
     
     # === Export ===
     
