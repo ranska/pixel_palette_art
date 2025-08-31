@@ -247,22 +247,22 @@ Name: Test Formatting
             self.palette.add_color(0, 255, 0, "Vert")
         
         with it('exporte en format GIMP'):
-            result = self.palette.to_gimp_format()
-            
+            result = self.palette.to_formatted_string("gimp")
+
             expect(result).to(start_with("GIMP Palette"))
             expect(result).to(contain("Name: Ma Palette"))
             expect(result).to(contain("Columns: 2"))
             expect(result).to(contain("255   0   0\tRouge"))
             expect(result).to(contain("  0 255   0\tVert"))
-        
+
         with it('exporte en liste hex'):
-            result = self.palette.to_hex_list()
-            
+            result = self.palette.to_list("hex")
+
             expect(result).to(equal(["#ff0000", "#00ff00"]))
-        
+
         with it('exporte en tuples RGB'):
             result = self.palette.to_rgb_tuples()
-            
+
             expect(result).to(equal([(255, 0, 0), (0, 255, 0)]))
     
     with context('Propriétés et comportement'):

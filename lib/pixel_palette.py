@@ -205,23 +205,36 @@ class PixelPalette:
     
     # === Export ===
 
-    def to_gimp_format(self) -> str:
-        """Exporte en format GIMP"""
-        from .palette.exporters.exporter_registry import ExporterRegistry
-        exporter_class = ExporterRegistry.get_exporter_class("gimp")
-        exporter = exporter_class()
-        return exporter.export(self.colors, metadata=self.metadata)
+    def to_list(self, format_type: str = "hex", include_names: bool = False) -> List[str]:
+        """
+        Exporte la palette comme liste de strings
 
-    def to_hex_list(self) -> List[str]:
-        """Exporte comme liste de couleurs hexadécimales"""
+        Args:
+            format_type: "hex", "rgb", etc.
+            include_names: Inclure les noms des couleurs
+
+        Returns:
+            List[str]: Liste des couleurs formatées
+        """
         from .palette.exporters.exporter_registry import ExporterRegistry
-        exporter_class = ExporterRegistry.get_exporter_class("hex")
+
+        if format_type not in ExporterRegistry.available_formats():
+            raise ValueError(f"Format inconnu: {format_type}")
+
+        exporter_class = ExporterRegistry.get_exporter_class(format_type)
         exporter = exporter_class()
-        hex_string = exporter.export(self.colors, separator="\n", include_names=False)
-        return hex_string.split("\n") if hex_string else []
+
+        # Export normal puis split
+        content = exporter.export(self.colors, separator="\n", include_names=include_names)
+        return content.split("\n") if content else []
 
     def to_rgb_tuples(self) -> List[Tuple[int, int, int]]:
-        """Exporte comme liste de tuples RGB"""
+        """
+        Exporte la palette comme liste de tuples RGB
+
+        Returns:
+            List[Tuple[int, int, int]]: Liste des tuples RGB
+        """
         from .palette.exporters.exporter_registry import ExporterRegistry
         exporter_class = ExporterRegistry.get_exporter_class("rgb")
         exporter = exporter_class()
