@@ -15,6 +15,15 @@ class PixelPalette:
 
     name:   str              = "Untitled Palette"
     colors: List[PixelColor] = field(default_factory=list)
+    raw_content: str = ""
+    source_filename: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    format_type: str = "unknown"
+
+    def __post_init__(self):
+        # Parse automatiquement si du contenu est fourni
+        if self.raw_content.strip():
+            self._parse_content()
 
     @classmethod
     def create_monochrome(cls, color: PixelColor, count: int, name: Optional[str] = None) -> 'PixelPalette':
@@ -67,32 +76,18 @@ class PixelPalette:
         """Parse le contenu selon le format détecté"""
         if not self.raw_content.strip():
             return
-        
-        # Détection du format
-        if self._is_gimp_format():
-            self.format_type = "gimp"
-            self._parse_gimp_palette()
-        elif self._is_adobe_aco_format():
-            self.format_type = "adobe_aco"
-            self._parse_adobe_aco()
-        else:
-            # Format générique ou inconnu
-            self.format_type = "generic"
-            self._parse_generic_format()
-    
-    def _is_gimp_format(self) -> bool:
-        """Détecte si c'est une palette GIMP"""
+
+        # Temporairement, utiliser le parsing interne jusqu'à ce que les parsers soient opérationnels
         lines = self.raw_content.strip().split('\n')
-        return len(lines) > 0 and lines[0].strip().startswith('GIMP Palette')
-    
-    def _is_adobe_aco_format(self) -> bool:
-        """Détecte si c'est une palette Adobe (binaire)"""
-        if isinstance(self.raw_content, bytes) and len(self.raw_content) >= 2:
-            return self.raw_content[0] == 0x00 and self.raw_content[1] == 0x01
-        return False
-    
-    def _parse_gimp_palette(self):
-        """Parse une palette GIMP (.gpl)"""
+        if len(lines) > 0 and lines[0].strip().startswith('GIMP Palette'):
+            self.format_type = "gimp"
+            self._parse_gimp_palette_old()
+        else:
+            self.format_type = "generic"
+            self._parse_generic_format_old()
+
+    def _parse_gimp_palette_old(self):
+        """Parse une palette GIMP (.gpl) - version temporaire"""
         lines = self.raw_content.strip().split('\n')
         
         if not lines:
@@ -125,12 +120,12 @@ class PixelPalette:
                 continue
             
             # Parse des couleurs
-            color = self._parse_color_line(line)
+            color = self._parse_color_line_old(line)
             if color:
                 self.colors.append(color)
     
-    def _parse_generic_format(self):
-        """Parse un format générique (hex, rgb, etc.)"""
+    def _parse_generic_format_old(self):
+        """Parse un format générique (hex, rgb, etc.) - version temporaire"""
         lines = self.raw_content.strip().split('\n')
         
         for line in lines:
@@ -138,12 +133,12 @@ class PixelPalette:
             if not line or line.startswith('#'):
                 continue
             
-            color = self._parse_color_line(line)
+            color = self._parse_color_line_old(line)
             if color:
                 self.colors.append(color)
     
-    def _parse_color_line(self, line: str) -> Optional[PixelColor]:
-        """Parse une ligne de couleur dans différents formats"""
+    def _parse_color_line_old(self, line: str) -> Optional[PixelColor]:
+        """Parse une ligne de couleur dans différents formats - version temporaire"""
         line = line.strip()
         
         # Format GIMP: "R G B Name"
@@ -172,12 +167,7 @@ class PixelPalette:
         
         return None
     
-    def _parse_adobe_aco(self):
-        """Parse une palette Adobe ACO (binaire) - implémentation basique"""
-        # Cette méthode nécessiterait une implémentation binaire plus complexe
-        # Pour l'instant, on marque juste le format
-        self.metadata['format'] = 'Adobe ACO'
-        pass
+
     
     # === Méthodes utilitaires ===
     

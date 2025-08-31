@@ -6,6 +6,7 @@ Contient toute la logique métier des palettes de couleurs
 
 from .pixel_palette import PixelPalette
 from .pixel_color   import PixelColor
+from . import parsers  # Import the parsers module
 
-__all__ = ['PixelPalette', 'PixelColor']
+__all__ = ['PixelPalette', 'PixelColor', 'parsers']
 __version__ = '1.0.0'
