@@ -1,21 +1,16 @@
 # spec/pixel_palette_spec.py
 
-<<<<<<< HEAD
-from mamba import description, it
-from expects import expect, equal, raise_error
-=======
 
 from spec.conftest import *
 
 from mamba import description, context, it, before
 from expects import expect, be_empty, have_length, equal, be_true, be_false, contain, start_with, end_with, expect, equal, be_above_or_equal, be_below_or_equal
->>>>>>> 403a1618b93a0f65404275ff853de4327ba16bb8
+
 import sys
 import os
 
 # Ajout du chemin parent pour importer la lib
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-<<<<<<< HEAD
 from lib.pixel_palette import PixelPalette
 from lib.pixel_color import PixelColor
 
@@ -108,9 +103,6 @@ with description('PixelPalette create_gradient method'):
         # Les couleurs intermédiaires gardent leurs noms originaux
         expect(palette.colors[1].name).to(equal("Middle1"))
         expect(palette.colors[2].name).to(equal("Middle2"))
-=======
-from lib.pixel_color   import PixelColor
-from lib.pixel_palette import PixelPalette
 
 #
 with description('PixelPalette') as self:
@@ -126,5 +118,3 @@ with description('PixelPalette') as self:
                 expect(color.g).to(equal(color_p.g))
                 expect(color.b).to(equal(color_p.b))
 
-
->>>>>>> 403a1618b93a0f65404275ff853de4327ba16bb8
