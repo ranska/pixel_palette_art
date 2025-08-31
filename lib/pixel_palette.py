@@ -77,95 +77,16 @@ class PixelPalette:
         if not self.raw_content.strip():
             return
 
-        # Temporairement, utiliser le parsing interne jusqu'à ce que les parsers soient opérationnels
-        lines = self.raw_content.strip().split('\n')
-        if len(lines) > 0 and lines[0].strip().startswith('GIMP Palette'):
-            self.format_type = "gimp"
-            self._parse_gimp_palette_old()
-        else:
-            self.format_type = "generic"
-            self._parse_generic_format_old()
+        from .parsers.parser_registry import ParserRegistry
 
-    def _parse_gimp_palette_old(self):
-        """Parse une palette GIMP (.gpl) - version temporaire"""
-        lines = self.raw_content.strip().split('\n')
-        
-        if not lines:
-            return
-        
-        # Header
-        header = lines[0].strip()
-        if not header.startswith('GIMP Palette'):
-            return
-        
-        # Métadonnées
-        self.metadata['format'] = 'GIMP Palette'
-        
-        for i, line in enumerate(lines[1:], 1):
-            line = line.strip()
-            
-            # Ignorer les lignes vides et commentaires
-            if not line or line.startswith('#'):
-                continue
-            
-            # Métadonnées de la palette
-            if line.startswith('Name:'):
-                self.metadata['name'] = line[5:].strip()
-                continue
-            elif line.startswith('Columns:'):
-                try:
-                    self.metadata['columns'] = int(line[8:].strip())
-                except ValueError:
-                    pass
-                continue
-            
-            # Parse des couleurs
-            color = self._parse_color_line_old(line)
-            if color:
-                self.colors.append(color)
-    
-    def _parse_generic_format_old(self):
-        """Parse un format générique (hex, rgb, etc.) - version temporaire"""
-        lines = self.raw_content.strip().split('\n')
-        
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            
-            color = self._parse_color_line_old(line)
-            if color:
-                self.colors.append(color)
-    
-    def _parse_color_line_old(self, line: str) -> Optional[PixelColor]:
-        """Parse une ligne de couleur dans différents formats - version temporaire"""
-        line = line.strip()
-        
-        # Format GIMP: "R G B Name"
-        gimp_match = re.match(r'^(\d+)\s+(\d+)\s+(\d+)(?:\s+(.+))?$', line)
-        if gimp_match:
-            r, g, b = map(int, gimp_match.groups()[:3])
-            name = gimp_match.group(4) or ""
-            return PixelColor(r, g, b, name.strip())
-        
-        # Format hexadécimal: "#RRGGBB" ou "RRGGBB"
-        hex_match = re.match(r'^#?([0-9a-fA-F]{6})(?:\s+(.+))?$', line)
-        if hex_match:
-            hex_color = hex_match.group(1)
-            name = hex_match.group(2) or ""
-            r = int(hex_color[0:2], 16)
-            g = int(hex_color[2:4], 16) 
-            b = int(hex_color[4:6], 16)
-            return PixelColor(r, g, b, name.strip())
-        
-        # Format RGB: "rgb(r,g,b)" ou "r,g,b"
-        rgb_match = re.match(r'^(?:rgb\()?(\d+)[,\s]+(\d+)[,\s]+(\d+)\)?(?:\s+(.+))?$', line)
-        if rgb_match:
-            r, g, b = map(int, rgb_match.groups()[:3])
-            name = rgb_match.group(4) or ""
-            return PixelColor(r, g, b, name.strip())
-        
-        return None
+        # Essayer les parsers enregistrés
+        for format_name in ParserRegistry.available_formats():
+            parser_class = ParserRegistry.get_parser_class(format_name)
+            parser = parser_class()
+            if parser.can_parse(self.raw_content):
+                self.format_type = format_name
+                self.colors = parser.parse(self.raw_content)
+                break
     
 
     
