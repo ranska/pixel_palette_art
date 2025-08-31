@@ -46,7 +46,7 @@ with description('PixelPalette create_gradient method'):
         palette.add_color(0, 255, 0, "Green")   # index 1
 
         # When/Then: doit lever une erreur
-        expect(lambda: palette.create_gradient(0, 1, "rgb")).to(raise_error(ValueError))
+        expect(lambda: palette.create_gradient(0, 1, "rgb")).to(raise_error
 
     with it('requires index1 to be less than index2'):
         # Given: une palette avec 3 couleurs
