@@ -15,6 +15,15 @@ class PixelPalette:
 
     name:   str              = "Untitled Palette"
     colors: List[PixelColor] = field(default_factory=list)
+    raw_content: str = ""
+    source_filename: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    format_type: str = "unknown"
+
+    def __post_init__(self):
+        # Parse automatiquement si du contenu est fourni
+        if self.raw_content.strip():
+            self._parse_content()
 
     @classmethod
     def create_monochrome(cls, color: PixelColor, count: int, name: Optional[str] = None) -> 'PixelPalette':
@@ -67,30 +76,18 @@ class PixelPalette:
         """Parse le contenu selon le format détecté"""
         if not self.raw_content.strip():
             return
-        
-        # Détection du format
-        if self._is_gimp_format():
-            self.format_type = "gimp"
-            self._parse_gimp_palette()
-        elif self._is_adobe_aco_format():
-            self.format_type = "adobe_aco"
-            self._parse_adobe_aco()
-        else:
-            # Format générique ou inconnu
-            self.format_type = "generic"
-            self._parse_generic_format()
-    
-    def _is_gimp_format(self) -> bool:
-        """Détecte si c'est une palette GIMP"""
+
+        # Temporairement, utiliser le parsing interne jusqu'à ce que les parsers soient opérationnels
         lines = self.raw_content.strip().split('\n')
-        return len(lines) > 0 and lines[0].strip().startswith('GIMP Palette')
-    
-    def _is_adobe_aco_format(self) -> bool:
-        """Détecte si c'est une palette Adobe (binaire)"""
-        return self.raw_content.startswith(b'\x00\x01') if isinstance(self.raw_content, bytes) else False
-    
-    def _parse_gimp_palette(self):
-        """Parse une palette GIMP (.gpl)"""
+        if len(lines) > 0 and lines[0].strip().startswith('GIMP Palette'):
+            self.format_type = "gimp"
+            self._parse_gimp_palette_old()
+        else:
+            self.format_type = "generic"
+            self._parse_generic_format_old()
+
+    def _parse_gimp_palette_old(self):
+        """Parse une palette GIMP (.gpl) - version temporaire"""
         lines = self.raw_content.strip().split('\n')
         
         if not lines:
@@ -123,12 +120,12 @@ class PixelPalette:
                 continue
             
             # Parse des couleurs
-            color = self._parse_color_line(line)
+            color = self._parse_color_line_old(line)
             if color:
                 self.colors.append(color)
     
-    def _parse_generic_format(self):
-        """Parse un format générique (hex, rgb, etc.)"""
+    def _parse_generic_format_old(self):
+        """Parse un format générique (hex, rgb, etc.) - version temporaire"""
         lines = self.raw_content.strip().split('\n')
         
         for line in lines:
@@ -136,12 +133,12 @@ class PixelPalette:
             if not line or line.startswith('#'):
                 continue
             
-            color = self._parse_color_line(line)
+            color = self._parse_color_line_old(line)
             if color:
                 self.colors.append(color)
     
-    def _parse_color_line(self, line: str) -> Optional[PixelColor]:
-        """Parse une ligne de couleur dans différents formats"""
+    def _parse_color_line_old(self, line: str) -> Optional[PixelColor]:
+        """Parse une ligne de couleur dans différents formats - version temporaire"""
         line = line.strip()
         
         # Format GIMP: "R G B Name"
@@ -170,12 +167,7 @@ class PixelPalette:
         
         return None
     
-    def _parse_adobe_aco(self):
-        """Parse une palette Adobe ACO (binaire) - implémentation basique"""
-        # Cette méthode nécessiterait une implémentation binaire plus complexe
-        # Pour l'instant, on marque juste le format
-        self.metadata['format'] = 'Adobe ACO'
-        pass
+
     
     # === Méthodes utilitaires ===
     
@@ -237,8 +229,58 @@ class PixelPalette:
         def get_brightness(color: PixelColor):
             # Formule de luminosité perceptuelle
             return 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
-        
+
         self.colors.sort(key=get_brightness)
+
+    def create_gradient(self, index1: int, index2: int, color_space: str = "rgb") -> None:
+        """
+        Crée un dégradé entre deux couleurs en modifiant les couleurs existantes entre les index.
+
+        Args:
+            index1: Index de la première couleur (doit être < index2)
+            index2: Index de la deuxième couleur
+            color_space: Espace de couleur pour l'interpolation ("rgb" ou "hsv")
+
+        Raises:
+            ValueError: Si index1 >= index2 ou s'il n'y a pas au moins une couleur entre
+            IndexError: Si les index sont hors limites
+        """
+        # Validation des paramètres
+        if index1 >= index2:
+            raise ValueError("index1 doit être inférieur à index2")
+
+        if index1 < 0 or index2 >= len(self.colors):
+            raise IndexError("Index hors limites")
+
+        # Vérifier qu'il y a au moins une couleur entre les deux
+        if index2 - index1 < 2:
+            raise ValueError("Il doit y avoir au moins une couleur entre index1 et index2")
+
+        # Récupérer les couleurs de départ et d'arrivée
+        start_color = self.colors[index1]
+        end_color = self.colors[index2]
+
+        # Calculer le nombre de couleurs intermédiaires
+        num_intermediate = index2 - index1 - 1
+
+        # Pour chaque couleur intermédiaire
+        for i in range(1, num_intermediate + 1):
+            # Calculer le ratio (de 0.0 à 1.0)
+            ratio = i / (num_intermediate + 1)
+
+            # Calculer l'index de la couleur à modifier
+            current_index = index1 + i
+
+            # Utiliser le mixer approprié selon l'espace de couleur
+            from .color.color_space_registry import ColorSpaceRegistry
+            mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+            # Calculer la nouvelle couleur
+            new_r, new_g, new_b = mixer.mix_with(start_color, end_color, ratio)
+
+            # Mettre à jour la couleur existante (conserver le nom)
+            original_name = self.colors[current_index].name
+            self.colors[current_index] = PixelColor(new_r, new_g, new_b, original_name)
     
     # === Export ===
     
