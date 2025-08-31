@@ -5,6 +5,7 @@ from typing import List, Tuple, Optional, Dict, Any
 from dataclasses import dataclass, field
 from pathlib import Path
 from .pixel_color import PixelColor
+from .palette.exporter_context import PaletteExporter
 
 @dataclass
 class PixelPalette:
@@ -216,17 +217,40 @@ class PixelPalette:
         Returns:
             List[str]: Liste des couleurs formatées
         """
-        from .palette.exporters.exporter_registry import ExporterRegistry
+        with PaletteExporter(self, format_type) as ctx:
+            return ctx.export_list(include_names=include_names)
 
-        if format_type not in ExporterRegistry.available_formats():
-            raise ValueError(f"Format inconnu: {format_type}")
+    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n",
+                          include_header: bool = True, include_names: bool = True) -> str:
+        """
+        Formate la palette selon le type demandé
 
-        exporter_class = ExporterRegistry.get_exporter_class(format_type)
-        exporter = exporter_class()
+        Args:
+            format_type: "rgb", "hex", "raw", "gimp"
+            separator: Séparateur entre les couleurs
+            include_header: Inclure les métadonnées en en-tête
+            include_names: Inclure les noms des couleurs
+        """
+        if self.is_empty:
+            return "# Palette vide"
 
-        # Export normal puis split
-        content = exporter.export(self.colors, separator="\n", include_names=include_names)
-        return content.split("\n") if content else []
+        # En-tête avec métadonnées
+        header = ""
+        if include_header:
+            header_lines = [
+                f"# Palette: {self.name}",
+                f"# Couleurs: {self.color_count}",
+                f"# Format: {self.format_type}"
+            ]
+            if self.source_filename:
+                header_lines.append(f"# Source: {self.source_filename}")
+            header_lines.append("#")
+            header = "\n".join(header_lines) + "\n"
+
+        # Utiliser le contexte d'export
+        with PaletteExporter(self, format_type) as ctx:
+            content = ctx.export(separator=separator, include_names=include_names)
+            return header + content
 
     def to_rgb_tuples(self) -> List[Tuple[int, int, int]]:
         """
@@ -235,10 +259,8 @@ class PixelPalette:
         Returns:
             List[Tuple[int, int, int]]: Liste des tuples RGB
         """
-        from .palette.exporters.exporter_registry import ExporterRegistry
-        exporter_class = ExporterRegistry.get_exporter_class("rgb")
-        exporter = exporter_class()
-        return exporter.export_tuples(self.colors)
+        with PaletteExporter(self, "rgb") as ctx:
+            return ctx.export_tuples()
 
     def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n",
                           include_header: bool = True, include_names: bool = True) -> str:
