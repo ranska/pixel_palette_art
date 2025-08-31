@@ -2,8 +2,8 @@
 
 import re
 from typing import List, Optional, Dict, Any
-from lib.parsers.base_parser import BaseParser
-from lib.pixel_color import PixelColor
+from .base_parser import BaseParser
+from ..pixel_color import PixelColor
 
 class GimpParser(BaseParser):
     """Parser pour les palettes GIMP (.gpl)."""
