@@ -204,40 +204,34 @@ class PixelPalette:
             self.colors[current_index] = PixelColor(new_r, new_g, new_b, original_name)
     
     # === Export ===
-    
+
     def to_gimp_format(self) -> str:
         """Exporte en format GIMP"""
-        lines = ["GIMP Palette"]
-        
-        if 'name' in self.metadata:
-            lines.append(f"Name: {self.metadata['name']}")
-        
-        if 'columns' in self.metadata:
-            lines.append(f"Columns: {self.metadata['columns']}")
-        
-        lines.append("#")
-        
-        for color in self.colors:
-            line = f"{color.r:3d} {color.g:3d} {color.b:3d}"
-            if color.name:
-                line += f"\t{color.name}"
-            lines.append(line)
-        
-        return '\n'.join(lines)
-    
+        from .palette.exporters.exporter_registry import ExporterRegistry
+        exporter_class = ExporterRegistry.get_exporter_class("gimp")
+        exporter = exporter_class()
+        return exporter.export(self.colors, metadata=self.metadata)
+
     def to_hex_list(self) -> List[str]:
         """Exporte comme liste de couleurs hexadécimales"""
-        return [color.hex for color in self.colors]
-    
+        from .palette.exporters.exporter_registry import ExporterRegistry
+        exporter_class = ExporterRegistry.get_exporter_class("hex")
+        exporter = exporter_class()
+        hex_string = exporter.export(self.colors, separator="\n", include_names=False)
+        return hex_string.split("\n") if hex_string else []
+
     def to_rgb_tuples(self) -> List[Tuple[int, int, int]]:
         """Exporte comme liste de tuples RGB"""
-        return [color.rgb_tuple for color in self.colors]
-    
-    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n", 
+        from .palette.exporters.exporter_registry import ExporterRegistry
+        exporter_class = ExporterRegistry.get_exporter_class("rgb")
+        exporter = exporter_class()
+        return exporter.export_tuples(self.colors)
+
+    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n",
                           include_header: bool = True, include_names: bool = True) -> str:
         """
         Formate la palette selon le type demandé
-        
+
         Args:
             format_type: "rgb", "hex", "raw", "gimp"
             separator: Séparateur entre les couleurs
@@ -246,52 +240,34 @@ class PixelPalette:
         """
         if self.is_empty:
             return "# Palette vide"
-        
-        lines = []
-        
+
+        from .palette.exporters.exporter_registry import ExporterRegistry
+
         # En-tête avec métadonnées
+        header = ""
         if include_header:
-            lines.append(f"# Palette: {self.name}")
-            lines.append(f"# Couleurs: {self.color_count}")
-            lines.append(f"# Format: {self.format_type}")
+            header_lines = [
+                f"# Palette: {self.name}",
+                f"# Couleurs: {self.color_count}",
+                f"# Format: {self.format_type}"
+            ]
             if self.source_filename:
-                lines.append(f"# Source: {self.source_filename}")
-            lines.append("#")
-        
-        # Formatage des couleurs
-        if format_type == "hex":
-            for color in self.colors:
-                line = color.hex
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        elif format_type == "rgb":
-            for color in self.colors:
-                line = f"rgb({color.r}, {color.g}, {color.b})"
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        elif format_type == "raw":
-            for color in self.colors:
-                line = f"{color.r} {color.g} {color.b}"
-                if include_names and color.name:
-                    line += f" {color.name}"
-                lines.append(line)
-        
-        elif format_type == "gimp":
-            return self.to_gimp_format()
-        
+                header_lines.append(f"# Source: {self.source_filename}")
+            header_lines.append("#")
+            header = "\n".join(header_lines) + "\n"
+
+        # Utiliser l'exporteur approprié
+        if format_type in ExporterRegistry.available_formats():
+            exporter_class = ExporterRegistry.get_exporter_class(format_type)
+            exporter = exporter_class()
+            content = exporter.export(self.colors, separator=separator, include_names=include_names)
+            return header + content
         else:
             # Format par défaut : rgb
-            for color in self.colors:
-                line = f"{color.r:3d} {color.g:3d} {color.b:3d}"
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        return separator.join(lines)
+            exporter_class = ExporterRegistry.get_exporter_class("rgb")
+            exporter = exporter_class()
+            content = exporter.export(self.colors, separator=separator, include_names=include_names)
+            return header + content
     
     # === Propriétés ===
     
