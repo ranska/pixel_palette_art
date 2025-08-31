@@ -262,47 +262,7 @@ class PixelPalette:
         with PaletteExporter(self, "rgb") as ctx:
             return ctx.export_tuples()
 
-    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n",
-                          include_header: bool = True, include_names: bool = True) -> str:
-        """
-        Formate la palette selon le type demandé
 
-        Args:
-            format_type: "rgb", "hex", "raw", "gimp"
-            separator: Séparateur entre les couleurs
-            include_header: Inclure les métadonnées en en-tête
-            include_names: Inclure les noms des couleurs
-        """
-        if self.is_empty:
-            return "# Palette vide"
-
-        from .palette.exporters.exporter_registry import ExporterRegistry
-
-        # En-tête avec métadonnées
-        header = ""
-        if include_header:
-            header_lines = [
-                f"# Palette: {self.name}",
-                f"# Couleurs: {self.color_count}",
-                f"# Format: {self.format_type}"
-            ]
-            if self.source_filename:
-                header_lines.append(f"# Source: {self.source_filename}")
-            header_lines.append("#")
-            header = "\n".join(header_lines) + "\n"
-
-        # Utiliser l'exporteur approprié
-        if format_type in ExporterRegistry.available_formats():
-            exporter_class = ExporterRegistry.get_exporter_class(format_type)
-            exporter = exporter_class()
-            content = exporter.export(self.colors, separator=separator, include_names=include_names)
-            return header + content
-        else:
-            # Format par défaut : rgb
-            exporter_class = ExporterRegistry.get_exporter_class("rgb")
-            exporter = exporter_class()
-            content = exporter.export(self.colors, separator=separator, include_names=include_names)
-            return header + content
     
     # === Propriétés ===
     
