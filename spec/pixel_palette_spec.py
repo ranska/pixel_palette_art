@@ -4,7 +4,7 @@
 from spec.conftest import *
 
 from mamba import description, context, it, before
-from expects import expect, be_empty, have_length, equal, be_true, be_false, contain, start_with, end_with, expect, equal, be_above_or_equal, be_below_or_equal
+from expects import expect, be_empty, have_length, equal, be_true, be_false, contain, start_with, end_with, expect, equal, be_above_or_equal, be_below_or_equal, raise_error
 
 import sys
 import os
@@ -46,7 +46,7 @@ with description('PixelPalette create_gradient method'):
         palette.add_color(0, 255, 0, "Green")   # index 1
 
         # When/Then: doit lever une erreur
-        expect(lambda: palette.create_gradient(0, 1, "rgb")).to(raise_error
+        expect(lambda: palette.create_gradient(0, 1, "rgb")).to(raise_error)
 
     with it('requires index1 to be less than index2'):
         # Given: une palette avec 3 couleurs
