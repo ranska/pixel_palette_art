@@ -58,7 +58,21 @@ class PixelColor:
         """Retourne RGB normalisé (0.0-1.0)"""
         return (self.r / 255.0, self.g / 255.0, self.b / 255.0)
 
+<<<<<<< HEAD
     def distance_to(self, other: 'PixelColor') -> float:
+=======
+    def create_copy(self):
+        """Créer une copie de la couleur"""
+        return PixelColor(
+            r           = self.r,
+            g           = self.g,
+            b           = self.b,
+            name        = self.name,
+            color_space = self.color_space
+        )
+
+    def distance_to(self, other: 'Color') -> float:
+>>>>>>> 403a1618b93a0f65404275ff853de4327ba16bb8
         """Distance euclidienne entre deux couleurs"""
         return ((self.r - other.r)**2 + (self.g - other.g)**2 + (self.b - other.b)**2) ** 0.5
 
