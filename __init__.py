@@ -4,19 +4,16 @@ Extension ComfyUI pour les palettes de pixel art
 """
 
 from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode, PixelPaletteExtractorNode, CreateColorFromRGBNode, ColorFormatterNode, ColorPreviewNode, MixColorsNode
-# from .nodes.palette.replace_color_at_node import ReplaceColorAtNode
-# Import will be done in NODE_CLASS_MAPPINGS
-#  from . import PixelPaletteExtractor
 
-# Configuration ComfyUI
+# Import ReplaceColorAtNode directly
 import importlib.util
 import os
 
-# Import ReplaceColorAtNode using absolute path
 ReplaceColorAtNode = None
-node_path = os.path.join(os.path.dirname(__file__), "nodes", "palette", "replace_color_at_node.py")
 try:
-    spec = importlib.util.spec_from_file_location("replace_color_at_node", node_path)
+    # Try to import using importlib for better compatibility
+    node_file = os.path.join(os.path.dirname(__file__), "nodes", "palette", "replace_color_at_node.py")
+    spec = importlib.util.spec_from_file_location("replace_color_at_node", node_file)
     if spec and spec.loader:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)

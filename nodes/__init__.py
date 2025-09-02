@@ -11,7 +11,7 @@ from .create_color_from_rgb_node   import CreateColorFromRGBNode
 from .color_formatter_node         import ColorFormatterNode
 from .color_preview_node           import ColorPreviewNode
 from .mix_colors_node              import MixColorsNode
-# from .palette.replace_color_at_node import ReplaceColorAtNode
+# ReplaceColorAtNode will be imported directly in main __init__.py
 
 __all__ = [
     'GimpPaletteLoaderNode',
