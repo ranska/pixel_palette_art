@@ -1,0 +1,45 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 64,
+      "green": 180,
+      "blue": 130,
+      "color_name": "Vert menthe"
+    },
+    "_meta": {
+      "title": "Vert menthe"
+    }
+  },
+  "4": {
+    "class_type": "ColorPreviewNode",
+    "inputs": {
+      "width": 256,
+      "height": 256,
+      "show_text": true,
+      "text_format": "hex",
+      "text_color": "auto",
+      "text_size": 24,
+      "text_position": "center",
+      "color": [
+        "3",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview (hex)"
+    }
+  },
+  "5": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

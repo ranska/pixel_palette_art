@@ -1,0 +1,134 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 255,
+      "green": 100,
+      "blue": 0,
+      "color_name": "Orange"
+    },
+    "_meta": {
+      "title": "Orange"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 0,
+      "green": 100,
+      "blue": 255,
+      "color_name": "Bleu ciel"
+    },
+    "_meta": {
+      "title": "Bleu ciel"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 12,
+      "color_space": "hsv",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 12 (HSV)"
+    }
+  },
+  "6": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "grid",
+      "cell_size": 48,
+      "columns": 4,
+      "show_names": false,
+      "show_indices": true,
+      "show_hex": true,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (grid)"
+    }
+  },
+  "7": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "6",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "8": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 40,
+      "columns": 12,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": false,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "9": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "10": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "vertical",
+      "cell_size": 40,
+      "columns": 1,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": false,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (vertical)"
+    }
+  },
+  "11": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

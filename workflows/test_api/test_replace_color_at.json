@@ -1,0 +1,133 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 200,
+      "green": 30,
+      "blue": 30,
+      "color_name": "Rouge"
+    },
+    "_meta": {
+      "title": "Rouge"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 30,
+      "green": 30,
+      "blue": 200,
+      "color_name": "Bleu"
+    },
+    "_meta": {
+      "title": "Bleu"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 8,
+      "color_space": "rgb",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 8 (RGB)"
+    }
+  },
+  "6": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": true,
+      "show_hex": false,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "7": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "6",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "8": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 0,
+      "green": 255,
+      "blue": 0,
+      "color_name": "Vert vif"
+    },
+    "_meta": {
+      "title": "Vert vif"
+    }
+  },
+  "9": {
+    "class_type": "ReplaceColorAtNode",
+    "inputs": {
+      "index": 3,
+      "palette": [
+        "5",
+        0
+      ],
+      "color": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Replace @3"
+    }
+  },
+  "10": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": true,
+      "show_hex": false,
+      "palette": [
+        "9",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "11": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

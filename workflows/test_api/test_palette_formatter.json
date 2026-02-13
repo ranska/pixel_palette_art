@@ -1,0 +1,60 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 255,
+      "green": 200,
+      "blue": 0,
+      "color_name": "Jaune"
+    },
+    "_meta": {
+      "title": "Jaune"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 150,
+      "green": 0,
+      "blue": 200,
+      "color_name": "Violet"
+    },
+    "_meta": {
+      "title": "Violet"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 6,
+      "color_space": "rgb",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 6 (RGB)"
+    }
+  },
+  "6": {
+    "class_type": "PaletteFormatter",
+    "inputs": {
+      "format_type": "hex",
+      "separator": "\n",
+      "include_header": true,
+      "include_names": true,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Format (hex)"
+    }
+  }
+}
