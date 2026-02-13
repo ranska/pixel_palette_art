@@ -1,0 +1,551 @@
+{
+  "last_node_id": 13,
+  "last_link_id": 10,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Note",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "Note FR",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇫🇷 FRANÇAIS\n─────────────\nTri d'une palette par teinte (hue) et par luminosité (brightness).\nUn dégradé de 8 couleurs est créé entre rouge et bleu,\npuis trié selon deux critères différents pour comparer le résultat.\n\n⚡ Nodes utilisés : CreateColorFromRGBNode, CreateGradientPaletteNode, SortPaletteNode, PaletteViewNode"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 2,
+      "type": "Note",
+      "pos": [
+        0,
+        220
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "Note EN",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇬🇧 ENGLISH\n─────────────\nSorting a palette by hue and by brightness.\nAn 8-color gradient from red to blue is created,\nthen sorted by two different criteria to compare results.\n\n⚡ Nodes used: CreateColorFromRGBNode, CreateGradientPaletteNode, SortPaletteNode, PaletteViewNode"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        480
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "title": "Rouge",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        220,
+        30,
+        30,
+        "Rouge"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        680
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Bleu",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        30,
+        50,
+        220,
+        "Bleu"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "CreateGradientPaletteNode",
+      "pos": [
+        320,
+        560
+      ],
+      "size": [
+        280,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "color_start",
+          "type": "PIXEL_COLOR",
+          "link": 1
+        },
+        {
+          "name": "color_end",
+          "type": "PIXEL_COLOR",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "gradient_palette",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            3,
+            5,
+            8
+          ]
+        }
+      ],
+      "title": "Gradient 8 (HSV)",
+      "properties": {
+        "Node name for S&R": "CreateGradientPaletteNode"
+      },
+      "widgets_values": [
+        8,
+        "hsv"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PaletteViewNode",
+      "pos": [
+        660,
+        460
+      ],
+      "size": [
+        280,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "title": "View (horizontal)",
+      "properties": {
+        "Node name for S&R": "PaletteViewNode"
+      },
+      "widgets_values": [
+        "horizontal",
+        40,
+        8,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [
+        1000,
+        380
+      ],
+      "size": [
+        250,
+        280
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "title": "Preview",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 8,
+      "type": "SortPaletteNode",
+      "pos": [
+        660,
+        600
+      ],
+      "size": [
+        250,
+        100
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "sorted_palette",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "title": "Sort (hue)",
+      "properties": {
+        "Node name for S&R": "SortPaletteNode"
+      },
+      "widgets_values": [
+        "hue"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "PaletteViewNode",
+      "pos": [
+        980,
+        560
+      ],
+      "size": [
+        280,
+        200
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "title": "View (horizontal)",
+      "properties": {
+        "Node name for S&R": "PaletteViewNode"
+      },
+      "widgets_values": [
+        "horizontal",
+        40,
+        8,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        1320,
+        480
+      ],
+      "size": [
+        250,
+        280
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 7
+        }
+      ],
+      "title": "Preview",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "SortPaletteNode",
+      "pos": [
+        660,
+        740
+      ],
+      "size": [
+        250,
+        100
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "sorted_palette",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "title": "Sort (brightness)",
+      "properties": {
+        "Node name for S&R": "SortPaletteNode"
+      },
+      "widgets_values": [
+        "brightness"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "PaletteViewNode",
+      "pos": [
+        980,
+        700
+      ],
+      "size": [
+        280,
+        200
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "title": "View (horizontal)",
+      "properties": {
+        "Node name for S&R": "PaletteViewNode"
+      },
+      "widgets_values": [
+        "horizontal",
+        40,
+        8,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 13,
+      "type": "PreviewImage",
+      "pos": [
+        1320,
+        620
+      ],
+      "size": [
+        250,
+        280
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "title": "Preview",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      5,
+      0,
+      "PIXEL_COLOR"
+    ],
+    [
+      2,
+      4,
+      0,
+      5,
+      1,
+      "PIXEL_COLOR"
+    ],
+    [
+      3,
+      5,
+      0,
+      6,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      5,
+      0,
+      8,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      6,
+      8,
+      0,
+      9,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      7,
+      9,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      8,
+      5,
+      0,
+      11,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      9,
+      11,
+      0,
+      12,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      10,
+      12,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    },
+    "info": {
+      "title": "Test — SortPaletteNode"
+    }
+  },
+  "version": 0.4
+}

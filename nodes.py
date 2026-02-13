@@ -10,7 +10,7 @@ class PixelPaletteExtractor:
     """
     
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
@@ -110,7 +110,7 @@ class PixelPaletteExtractor:
         
         try:
             # Méthode 1: Essayer de convertir en palette indexée
-            img_palette = img_pil.convert('P', palette=Image.ADAPTIVE, colors=256)
+            img_palette = img_pil.convert('P', colors=256)
             palette_data = img_palette.getpalette()
             
             if palette_data is not None:

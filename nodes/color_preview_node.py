@@ -98,11 +98,8 @@ class ColorPreviewNode:
                 else:  # black
                     text_rgb = (0, 0, 0)
                 
-                # Police (utilise police par défaut PIL)
-                try:
-                    font = ImageFont.truetype("arial.ttf", text_size)
-                except:
-                    font = ImageFont.load_default()
+                # Police (utilise police par défaut PIL avec taille)
+                font = ImageFont.load_default(size=text_size)
                 
                 # Position du texte
                 bbox = draw.textbbox((0, 0), text, font=font)

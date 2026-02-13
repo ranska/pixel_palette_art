@@ -1,0 +1,246 @@
+{
+  "last_node_id": 6,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Note",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "Note FR",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇫🇷 FRANÇAIS\n─────────────\nExport d'une palette en texte formaté.\nUn dégradé de 6 couleurs est exporté au format hex\navec en-tête et noms de couleurs.\n\n⚡ Nodes utilisés : CreateColorFromRGBNode, CreateGradientPaletteNode, PaletteFormatter"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 2,
+      "type": "Note",
+      "pos": [
+        0,
+        200
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "Note EN",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇬🇧 ENGLISH\n─────────────\nExporting a palette as formatted text.\nA 6-color gradient is exported in hex format\nwith header and color names.\n\n⚡ Nodes used: CreateColorFromRGBNode, CreateGradientPaletteNode, PaletteFormatter"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        440
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "title": "Jaune",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        255,
+        200,
+        0,
+        "Jaune"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        640
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Violet",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        150,
+        0,
+        200,
+        "Violet"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "CreateGradientPaletteNode",
+      "pos": [
+        320,
+        520
+      ],
+      "size": [
+        280,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "color_start",
+          "type": "PIXEL_COLOR",
+          "link": 1
+        },
+        {
+          "name": "color_end",
+          "type": "PIXEL_COLOR",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "gradient_palette",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "title": "Gradient 6 (RGB)",
+      "properties": {
+        "Node name for S&R": "CreateGradientPaletteNode"
+      },
+      "widgets_values": [
+        6,
+        "rgb"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PaletteFormatter",
+      "pos": [
+        660,
+        500
+      ],
+      "size": [
+        280,
+        160
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "formatted_text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "Format (hex)",
+      "properties": {
+        "Node name for S&R": "PaletteFormatter"
+      },
+      "widgets_values": [
+        "hex",
+        "\n",
+        true,
+        true
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      5,
+      0,
+      "PIXEL_COLOR"
+    ],
+    [
+      2,
+      4,
+      0,
+      5,
+      1,
+      "PIXEL_COLOR"
+    ],
+    [
+      3,
+      5,
+      0,
+      6,
+      0,
+      "PIXEL_PALETTE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    },
+    "info": {
+      "title": "Test — PaletteFormatter"
+    }
+  },
+  "version": 0.4
+}

@@ -1,0 +1,119 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 255,
+      "green": 50,
+      "blue": 50,
+      "color_name": "Rouge"
+    },
+    "_meta": {
+      "title": "Rouge"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 50,
+      "green": 50,
+      "blue": 255,
+      "color_name": "Bleu"
+    },
+    "_meta": {
+      "title": "Bleu"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 8,
+      "color_space": "rgb",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 8 (RGB)"
+    }
+  },
+  "6": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": true,
+      "show_hex": false,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "7": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "6",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "8": {
+    "class_type": "GradientBetweenNode",
+    "inputs": {
+      "index_start": 2,
+      "index_end": 5,
+      "color_space": "rgb",
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient Between [2→5]"
+    }
+  },
+  "9": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": true,
+      "show_hex": false,
+      "palette": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "10": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "9",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

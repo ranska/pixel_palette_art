@@ -1,0 +1,160 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 220,
+      "green": 30,
+      "blue": 30,
+      "color_name": "Rouge"
+    },
+    "_meta": {
+      "title": "Rouge"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 30,
+      "green": 50,
+      "blue": 220,
+      "color_name": "Bleu"
+    },
+    "_meta": {
+      "title": "Bleu"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 8,
+      "color_space": "hsv",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 8 (HSV)"
+    }
+  },
+  "6": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 40,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": false,
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "7": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "6",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "8": {
+    "class_type": "SortPaletteNode",
+    "inputs": {
+      "sort_by": "hue",
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sort (hue)"
+    }
+  },
+  "9": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 40,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": false,
+      "palette": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "10": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "9",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "11": {
+    "class_type": "SortPaletteNode",
+    "inputs": {
+      "sort_by": "brightness",
+      "palette": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Sort (brightness)"
+    }
+  },
+  "12": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 40,
+      "columns": 8,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": false,
+      "palette": [
+        "11",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "13": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "12",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

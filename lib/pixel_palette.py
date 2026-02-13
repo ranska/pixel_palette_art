@@ -2,9 +2,10 @@
 # lib/pixel_palette.py
 import re
 from typing import List, Tuple, Optional, Dict, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from .pixel_color import PixelColor
+from .palette.exporter_context import PaletteExporter
 
 @dataclass
 class PixelPalette:
@@ -12,131 +13,126 @@ class PixelPalette:
     Classe métier pour gérer les palettes de couleurs
     Supporte les formats GIMP (.gpl), Adobe (.aco), etc.
     """
-    
-    def __init__(self, raw_content: str = "", source_filename: str = ""):
+
+    name:   str              = "Untitled Palette"
+    colors: List[PixelColor] = field(default_factory=list)
+    raw_content: str = ""
+    source_filename: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    format_type: str = "unknown"
+
+    def __post_init__(self):
+        # Parse automatiquement si du contenu est fourni
+        if self.raw_content.strip():
+            self._parse_content()
+
+    @classmethod
+    def create_monochrome(cls, color: PixelColor, count: int, name: Optional[str] = None) -> 'PixelPalette':
+        """
+        Crée une palette monochrome avec une couleur répétée count fois
+
+        Args:
+            color: La couleur de base à répéter
+            count: Le nombre de fois à répéter la couleur
+            name: Nom optionnel de la palette
+
+        Returns:
+            PixelPalette: Une nouvelle palette contenant la couleur répétée
+
+        Raises:
+            ValueError: Si count est inférieur ou égal à 0
+        """
+        if count <= 0:
+            raise ValueError("Le count doit être supérieur à 0")
+
+        # Nom par défaut basé sur la couleur
+        if name is None:
+            color_name = color.name if color.name else color.hex
+            name = f"Palette monochrome - {color_name}"
+
+        # Créer la liste de couleurs
+        colors = []
+        for i in range(count):
+            color_copy = color.create_copy()
+            colors.append(color_copy)
+
+        pixel_palette = cls()
+        #  pixel_palette.name = name
+        pixel_palette.colors = colors
+        return pixel_palette
+
+    @classmethod
+    def create_gradient_palette(cls, color_start: PixelColor, color_end: PixelColor,
+                                num_colors: int, color_space: str = "rgb") -> 'PixelPalette':
+        """
+        Crée une palette de dégradé entre deux couleurs
+
+        Args:
+            color_start: Couleur de départ
+            color_end: Couleur d'arrivée
+            num_colors: Nombre total de couleurs dans la palette (minimum 2)
+            color_space: Espace de couleur pour l'interpolation ("rgb" ou "hsv")
+
+        Returns:
+            PixelPalette: Nouvelle palette contenant le dégradé
+
+        Raises:
+            ValueError: Si num_colors < 2
+        """
+        if num_colors < 2:
+            raise ValueError("Le nombre de couleurs doit être au minimum 2")
+
+        from .color.color_space_registry import ColorSpaceRegistry
+        mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+        palette = cls()
+        for i in range(num_colors):
+            ratio = i / (num_colors - 1)
+            if ratio == 0.0:
+                new_color = color_start.create_copy()
+            elif ratio == 1.0:
+                new_color = color_end.create_copy()
+            else:
+                r, g, b = mixer.mix_with(color_start, color_end, ratio)
+                new_color = PixelColor(r, g, b)
+            palette.colors.append(new_color)
+
+        return palette
+
+    def __init__(self, name: str = "Untitled Palette",
+                 colors: Optional[List[PixelColor]] = None,
+                 raw_content: str = "",
+                 source_filename: Optional[str] = None,
+                 metadata: Optional[Dict[str, Any]] = None,
+                 format_type: str = "unknown"):
+        self.name = name
+        self.colors = colors if colors is not None else []
         self.raw_content = raw_content
         self.source_filename = source_filename
-        self.colors: List[PixelColor] = []
-        self.metadata: Dict[str, Any] = {}
-        self.format_type = "unknown"
-        
+        self.metadata = metadata if metadata is not None else {}
+        self.format_type = format_type
+
         # Parse automatiquement si du contenu est fourni
-        if raw_content.strip():
+        if self.raw_content.strip():
             self._parse_content()
     
     def _parse_content(self):
         """Parse le contenu selon le format détecté"""
         if not self.raw_content.strip():
             return
-        
-        # Détection du format
-        if self._is_gimp_format():
-            self.format_type = "gimp"
-            self._parse_gimp_palette()
-        elif self._is_adobe_aco_format():
-            self.format_type = "adobe_aco"
-            self._parse_adobe_aco()
-        else:
-            # Format générique ou inconnu
-            self.format_type = "generic"
-            self._parse_generic_format()
+
+        from .parsers.parser_registry import ParserRegistry
+
+        # Essayer les parsers enregistrés
+        for format_name in ParserRegistry.available_formats():
+            parser_class = ParserRegistry.get_parser_class(format_name)
+            parser = parser_class()
+            if parser.can_parse(self.raw_content):
+                self.format_type = format_name
+                self.colors = parser.parse(self.raw_content)
+                break
     
-    def _is_gimp_format(self) -> bool:
-        """Détecte si c'est une palette GIMP"""
-        lines = self.raw_content.strip().split('\n')
-        return len(lines) > 0 and lines[0].strip().startswith('GIMP Palette')
-    
-    def _is_adobe_aco_format(self) -> bool:
-        """Détecte si c'est une palette Adobe (binaire)"""
-        return self.raw_content.startswith(b'\x00\x01') if isinstance(self.raw_content, bytes) else False
-    
-    def _parse_gimp_palette(self):
-        """Parse une palette GIMP (.gpl)"""
-        lines = self.raw_content.strip().split('\n')
-        
-        if not lines:
-            return
-        
-        # Header
-        header = lines[0].strip()
-        if not header.startswith('GIMP Palette'):
-            return
-        
-        # Métadonnées
-        self.metadata['format'] = 'GIMP Palette'
-        
-        for i, line in enumerate(lines[1:], 1):
-            line = line.strip()
-            
-            # Ignorer les lignes vides et commentaires
-            if not line or line.startswith('#'):
-                continue
-            
-            # Métadonnées de la palette
-            if line.startswith('Name:'):
-                self.metadata['name'] = line[5:].strip()
-                continue
-            elif line.startswith('Columns:'):
-                try:
-                    self.metadata['columns'] = int(line[8:].strip())
-                except ValueError:
-                    pass
-                continue
-            
-            # Parse des couleurs
-            color = self._parse_color_line(line)
-            if color:
-                self.colors.append(color)
-    
-    def _parse_generic_format(self):
-        """Parse un format générique (hex, rgb, etc.)"""
-        lines = self.raw_content.strip().split('\n')
-        
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            
-            color = self._parse_color_line(line)
-            if color:
-                self.colors.append(color)
-    
-    def _parse_color_line(self, line: str) -> Optional[PixelColor]:
-        """Parse une ligne de couleur dans différents formats"""
-        line = line.strip()
-        
-        # Format GIMP: "R G B Name"
-        gimp_match = re.match(r'^(\d+)\s+(\d+)\s+(\d+)(?:\s+(.+))?$', line)
-        if gimp_match:
-            r, g, b = map(int, gimp_match.groups()[:3])
-            name = gimp_match.group(4) or ""
-            return PixelColor(r, g, b, name.strip())
-        
-        # Format hexadécimal: "#RRGGBB" ou "RRGGBB"
-        hex_match = re.match(r'^#?([0-9a-fA-F]{6})(?:\s+(.+))?$', line)
-        if hex_match:
-            hex_color = hex_match.group(1)
-            name = hex_match.group(2) or ""
-            r = int(hex_color[0:2], 16)
-            g = int(hex_color[2:4], 16) 
-            b = int(hex_color[4:6], 16)
-            return PixelColor(r, g, b, name.strip())
-        
-        # Format RGB: "rgb(r,g,b)" ou "r,g,b"
-        rgb_match = re.match(r'^(?:rgb\()?(\d+)[,\s]+(\d+)[,\s]+(\d+)\)?(?:\s+(.+))?$', line)
-        if rgb_match:
-            r, g, b = map(int, rgb_match.groups()[:3])
-            name = rgb_match.group(4) or ""
-            return PixelColor(r, g, b, name.strip())
-        
-        return None
-    
-    def _parse_adobe_aco(self):
-        """Parse une palette Adobe ACO (binaire) - implémentation basique"""
-        # Cette méthode nécessiterait une implémentation binaire plus complexe
-        # Pour l'instant, on marque juste le format
-        self.metadata['format'] = 'Adobe ACO'
-        pass
+
     
     # === Méthodes utilitaires ===
     
@@ -198,44 +194,80 @@ class PixelPalette:
         def get_brightness(color: PixelColor):
             # Formule de luminosité perceptuelle
             return 0.299 * color.r + 0.587 * color.g + 0.114 * color.b
-        
+
         self.colors.sort(key=get_brightness)
+
+    def create_gradient(self, index1: int, index2: int, color_space: str = "rgb") -> None:
+        """
+        Crée un dégradé entre deux couleurs en modifiant les couleurs existantes entre les index.
+
+        Args:
+            index1: Index de la première couleur (doit être < index2)
+            index2: Index de la deuxième couleur
+            color_space: Espace de couleur pour l'interpolation ("rgb" ou "hsv")
+
+        Raises:
+            ValueError: Si index1 >= index2 ou s'il n'y a pas au moins une couleur entre
+            IndexError: Si les index sont hors limites
+        """
+        # Validation des paramètres
+        if index1 >= index2:
+            raise ValueError("index1 doit être inférieur à index2")
+
+        if index1 < 0 or index2 >= len(self.colors):
+            raise IndexError("Index hors limites")
+
+        # Vérifier qu'il y a au moins une couleur entre les deux
+        if index2 - index1 < 2:
+            raise ValueError("Il doit y avoir au moins une couleur entre index1 et index2")
+
+        # Récupérer les couleurs de départ et d'arrivée
+        start_color = self.colors[index1]
+        end_color = self.colors[index2]
+
+        # Calculer le nombre de couleurs intermédiaires
+        num_intermediate = index2 - index1 - 1
+
+        # Pour chaque couleur intermédiaire
+        for i in range(1, num_intermediate + 1):
+            # Calculer le ratio (de 0.0 à 1.0)
+            ratio = i / (num_intermediate + 1)
+
+            # Calculer l'index de la couleur à modifier
+            current_index = index1 + i
+
+            # Utiliser le mixer approprié selon l'espace de couleur
+            from .color.color_space_registry import ColorSpaceRegistry
+            mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+            # Calculer la nouvelle couleur
+            new_r, new_g, new_b = mixer.mix_with(start_color, end_color, ratio)
+
+            # Mettre à jour la couleur existante (conserver le nom)
+            original_name = self.colors[current_index].name
+            self.colors[current_index] = PixelColor(new_r, new_g, new_b, original_name)
     
     # === Export ===
-    
-    def to_gimp_format(self) -> str:
-        """Exporte en format GIMP"""
-        lines = ["GIMP Palette"]
-        
-        if 'name' in self.metadata:
-            lines.append(f"Name: {self.metadata['name']}")
-        
-        if 'columns' in self.metadata:
-            lines.append(f"Columns: {self.metadata['columns']}")
-        
-        lines.append("#")
-        
-        for color in self.colors:
-            line = f"{color.r:3d} {color.g:3d} {color.b:3d}"
-            if color.name:
-                line += f"\t{color.name}"
-            lines.append(line)
-        
-        return '\n'.join(lines)
-    
-    def to_hex_list(self) -> List[str]:
-        """Exporte comme liste de couleurs hexadécimales"""
-        return [color.hex for color in self.colors]
-    
-    def to_rgb_tuples(self) -> List[Tuple[int, int, int]]:
-        """Exporte comme liste de tuples RGB"""
-        return [color.rgb_tuple for color in self.colors]
-    
-    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n", 
+
+    def to_list(self, format_type: str = "hex", include_names: bool = False) -> List[str]:
+        """
+        Exporte la palette comme liste de strings
+
+        Args:
+            format_type: "hex", "rgb", etc.
+            include_names: Inclure les noms des couleurs
+
+        Returns:
+            List[str]: Liste des couleurs formatées
+        """
+        with PaletteExporter(self, format_type) as ctx:
+            return ctx.export_list(include_names=include_names)
+
+    def to_formatted_string(self, format_type: str = "rgb", separator: str = "\n",
                           include_header: bool = True, include_names: bool = True) -> str:
         """
         Formate la palette selon le type demandé
-        
+
         Args:
             format_type: "rgb", "hex", "raw", "gimp"
             separator: Séparateur entre les couleurs
@@ -244,52 +276,36 @@ class PixelPalette:
         """
         if self.is_empty:
             return "# Palette vide"
-        
-        lines = []
-        
+
         # En-tête avec métadonnées
+        header = ""
         if include_header:
-            lines.append(f"# Palette: {self.name}")
-            lines.append(f"# Couleurs: {self.color_count}")
-            lines.append(f"# Format: {self.format_type}")
+            header_lines = [
+                f"# Palette: {self.name}",
+                f"# Couleurs: {self.color_count}",
+                f"# Format: {self.format_type}"
+            ]
             if self.source_filename:
-                lines.append(f"# Source: {self.source_filename}")
-            lines.append("#")
-        
-        # Formatage des couleurs
-        if format_type == "hex":
-            for color in self.colors:
-                line = color.hex
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        elif format_type == "rgb":
-            for color in self.colors:
-                line = f"rgb({color.r}, {color.g}, {color.b})"
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        elif format_type == "raw":
-            for color in self.colors:
-                line = f"{color.r} {color.g} {color.b}"
-                if include_names and color.name:
-                    line += f" {color.name}"
-                lines.append(line)
-        
-        elif format_type == "gimp":
-            return self.to_gimp_format()
-        
-        else:
-            # Format par défaut : rgb
-            for color in self.colors:
-                line = f"{color.r:3d} {color.g:3d} {color.b:3d}"
-                if include_names and color.name:
-                    line += f" # {color.name}"
-                lines.append(line)
-        
-        return separator.join(lines)
+                header_lines.append(f"# Source: {self.source_filename}")
+            header_lines.append("#")
+            header = "\n".join(header_lines) + "\n"
+
+        # Utiliser le contexte d'export
+        with PaletteExporter(self, format_type) as ctx:
+            content = ctx.export(separator=separator, include_names=include_names)
+            return header + content
+
+    def to_rgb_tuples(self) -> List[Tuple[int, int, int]]:
+        """
+        Exporte la palette comme liste de tuples RGB
+
+        Returns:
+            List[Tuple[int, int, int]]: Liste des tuples RGB
+        """
+        with PaletteExporter(self, "rgb") as ctx:
+            return ctx.export_tuples()
+
+
     
     # === Propriétés ===
     
@@ -303,10 +319,10 @@ class PixelPalette:
         """Nombre de couleurs dans la palette"""
         return len(self.colors)
     
-    @property
-    def name(self) -> str:
-        """Nom de la palette"""
-        return self.metadata.get('name', Path(self.source_filename).stem if self.source_filename else "Sans nom")
+    #  @property
+    #  def name(self) -> str:
+        #  """Nom de la palette"""
+        #  return self.metadata.get('name', Path(self.source_filename).stem if self.source_filename else "Sans nom")
     
     @property
     def is_valid(self) -> bool:
@@ -322,8 +338,8 @@ class PixelPalette:
     def __iter__(self):
         return iter(self.colors)
     
-    def __str__(self):
-        return f"PixelPalette('{self.name}', {self.color_count} couleurs, format: {self.format_type})"
+    #  def __str__(self):
+        #  return f"PixelPalette('{self.name}', {self.color_count} couleurs, format: {self.format_type})"
     
-    def __repr__(self):
-        return self.__str__()
+    #  def __repr__(self):
+        #  return self.__str__()

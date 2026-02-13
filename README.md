@@ -19,6 +19,19 @@ You can create rgb color, and export it as text or image.
 
 ![color node](docs/create_color.png)
 
+## Color mixer
+
+The most inportant concept of this custom_nodes pack.
+
+You can mix 2 colors and get a 3rd one.
+For now there is rgb and hsv color_space mixer but I want to add more.
+
+![color node](docs/mix_colors.png)
+
+# Roadmap
+
+See issue list.
+The next target are export colors and palettes manipulation.
 
 # Inspiration
 
@@ -27,6 +40,7 @@ You can create rgb color, and export it as text or image.
 https://github.com/45uee/ComfyUI-Color_Transfer
 
 # Contribute 
+
 
 first install dev dependency
 
@@ -43,3 +57,8 @@ to run the test.
 mamba spec/
 ```
 Please make all test go green before asking for a PR.
+
+## git specific
+
+This repo use [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html)
+and `devlop` is set as default branch.
