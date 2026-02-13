@@ -191,7 +191,4 @@ class PaletteRenderer:
 
     def _get_font(self):
         """Retourne une police adaptée"""
-        try:
-            return ImageFont.truetype("arial.ttf", 10)
-        except (OSError, IOError):
-            return ImageFont.load_default()
+        return ImageFont.load_default(size=10)

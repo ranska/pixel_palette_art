@@ -1,15 +1,6 @@
 # nodes/palette/create_gradient_palette_node.py
-import sys
-import os
-
-# Ajout du chemin projet pour compatibilité ComfyUI
-current_file = os.path.abspath(__file__)
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-from lib.pixel_palette import PixelPalette
-from lib.pixel_color import PixelColor
+from ...lib.pixel_palette import PixelPalette
+from ...lib.pixel_color import PixelColor
 
 
 class CreateGradientPaletteNode:

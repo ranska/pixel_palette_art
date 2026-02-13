@@ -1,14 +1,5 @@
 # nodes/palette/replace_color_at_node.py
-import sys
-import os
-
-# Add project root to sys.path for ComfyUI compatibility
-current_file = os.path.abspath(__file__)
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-from lib.pixel_palette import PixelPalette, PixelColor
+from ...lib.pixel_palette import PixelPalette, PixelColor
 
 class ReplaceColorAtNode:
     """

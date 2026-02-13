@@ -1,17 +1,9 @@
 # nodes/palette/palette_view_node.py
-import sys
-import os
 import torch
 import numpy as np
 
-# Ajout du chemin projet pour compatibilité ComfyUI
-current_file = os.path.abspath(__file__)
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-from lib.pixel_palette import PixelPalette
-from lib.palette.palette_renderer import PaletteRenderer
+from ...lib.pixel_palette import PixelPalette
+from ...lib.palette.palette_renderer import PaletteRenderer
 
 
 class PaletteViewNode:
