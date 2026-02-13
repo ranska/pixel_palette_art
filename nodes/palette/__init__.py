@@ -2,5 +2,6 @@
 from .replace_color_at_node import ReplaceColorAtNode
 from .sort_palette_node import SortPaletteNode
 from .gradient_between_node import GradientBetweenNode
+from .create_gradient_palette_node import CreateGradientPaletteNode
 
-__all__ = ['ReplaceColorAtNode', 'SortPaletteNode', 'GradientBetweenNode']
+__all__ = ['ReplaceColorAtNode', 'SortPaletteNode', 'GradientBetweenNode', 'CreateGradientPaletteNode']

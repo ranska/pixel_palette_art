@@ -61,6 +61,44 @@ class PixelPalette:
         pixel_palette.colors = colors
         return pixel_palette
 
+    @classmethod
+    def create_gradient_palette(cls, color_start: PixelColor, color_end: PixelColor,
+                                num_colors: int, color_space: str = "rgb") -> 'PixelPalette':
+        """
+        Crée une palette de dégradé entre deux couleurs
+
+        Args:
+            color_start: Couleur de départ
+            color_end: Couleur d'arrivée
+            num_colors: Nombre total de couleurs dans la palette (minimum 2)
+            color_space: Espace de couleur pour l'interpolation ("rgb" ou "hsv")
+
+        Returns:
+            PixelPalette: Nouvelle palette contenant le dégradé
+
+        Raises:
+            ValueError: Si num_colors < 2
+        """
+        if num_colors < 2:
+            raise ValueError("Le nombre de couleurs doit être au minimum 2")
+
+        from .color.color_space_registry import ColorSpaceRegistry
+        mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+        palette = cls()
+        for i in range(num_colors):
+            ratio = i / (num_colors - 1)
+            if ratio == 0.0:
+                new_color = color_start.create_copy()
+            elif ratio == 1.0:
+                new_color = color_end.create_copy()
+            else:
+                r, g, b = mixer.mix_with(color_start, color_end, ratio)
+                new_color = PixelColor(r, g, b)
+            palette.colors.append(new_color)
+
+        return palette
+
     def __init__(self, name: str = "Untitled Palette",
                  colors: Optional[List[PixelColor]] = None,
                  raw_content: str = "",
