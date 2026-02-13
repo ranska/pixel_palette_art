@@ -61,17 +61,22 @@ class PixelPalette:
         pixel_palette.colors = colors
         return pixel_palette
 
-    
-    def __init__(self):
-        #  self.raw_content = raw_content
-        #  self.source_filename = source_filename
-        self.colors: List[PixelColor] = []
-        #  self.metadata: Dict[str, Any] = {}
-        #  self.format_type = "unknown"
-        
+    def __init__(self, name: str = "Untitled Palette",
+                 colors: Optional[List[PixelColor]] = None,
+                 raw_content: str = "",
+                 source_filename: Optional[str] = None,
+                 metadata: Optional[Dict[str, Any]] = None,
+                 format_type: str = "unknown"):
+        self.name = name
+        self.colors = colors if colors is not None else []
+        self.raw_content = raw_content
+        self.source_filename = source_filename
+        self.metadata = metadata if metadata is not None else {}
+        self.format_type = format_type
+
         # Parse automatiquement si du contenu est fourni
-        #  if raw_content.strip():
-            #  self._parse_content()
+        if self.raw_content.strip():
+            self._parse_content()
     
     def _parse_content(self):
         """Parse le contenu selon le format détecté"""
