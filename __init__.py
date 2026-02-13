@@ -4,9 +4,23 @@ Extension ComfyUI pour les palettes de pixel art
 """
 
 from .nodes import GimpPaletteLoaderNode, PaletteFormatterNode, PixelPaletteExtractorNode, CreateColorFromRGBNode, ColorFormatterNode, ColorPreviewNode, MixColorsNode
-#  from . import PixelPaletteExtractor
 
-# Configuration ComfyUI
+# Import ReplaceColorAtNode directly
+import importlib.util
+import os
+
+ReplaceColorAtNode = None
+try:
+    # Try to import using importlib for better compatibility
+    node_file = os.path.join(os.path.dirname(__file__), "nodes", "palette", "replace_color_at_node.py")
+    spec = importlib.util.spec_from_file_location("replace_color_at_node", node_file)
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        ReplaceColorAtNode = module.ReplaceColorAtNode
+except Exception as e:
+    print(f"Warning: Could not import ReplaceColorAtNode: {e}")
+
 NODE_CLASS_MAPPINGS = {
     "GimpPaletteLoader":      GimpPaletteLoaderNode,
     "PaletteFormatter":       PaletteFormatterNode,
@@ -17,6 +31,9 @@ NODE_CLASS_MAPPINGS = {
     "MixColorsNode":          MixColorsNode,
 }
 
+if ReplaceColorAtNode is not None:
+    NODE_CLASS_MAPPINGS["ReplaceColorAtNode"] = ReplaceColorAtNode
+
 NODE_DISPLAY_NAME_MAPPINGS = {
     "GimpPaletteLoader":      "GIMP Palette Loader",
     "PaletteFormatter":       "Palette Formatter",
@@ -25,6 +42,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ColorFormatterNode":     "Color to formatted string",
     "ColorPreviewNode":       "Color to image",
     "MixColorsNode":          "Mix colors",
+    "ReplaceColorAtNode":     "Replace Color At Index",
 }
 
 # Métadonnées de l'extension
