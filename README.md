@@ -39,26 +39,45 @@ The next target are export colors and palettes manipulation.
 
 https://github.com/45uee/ComfyUI-Color_Transfer
 
-# Contribute 
+# Contribute
 
 
-first install dev dependency
+## Setup
 
-```
+```bash
 pip install -r requirements-dev.txt
+lefthook install
 ```
 
-Then this project is very new but I want as a rubist to keep my BDD best practice.
-So here I choose https://github.com/nestorsalceda/mamba who look near https://rspec.info/ .
-Please if you know how to do a good BDD in python open an issue.
+## Tests (BDD avec Mamba)
 
-to run the test.
+Ce projet utilise [mamba](https://github.com/nestorsalceda/mamba) (equivalent Python de RSpec)
+avec [expects](https://expects.readthedocs.io/) pour les assertions.
+
+```bash
+# Lancer tous les tests
+mamba spec/ --format=documentation
+
+# Avec coverage
+mamba spec/ --enable-coverage --format=documentation
 ```
-mamba spec/
+
+Les tests sont lances automatiquement avant chaque commit via **lefthook**.
+Si un test echoue, le commit est bloque.
+
+Une CI GitHub Actions tourne aussi sur chaque push et PR (Python 3.10/3.11/3.12).
+
+## Git
+
+Ce repo utilise [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html).
+La branche par defaut est `develop`.
+
+```bash
+# Nouvelle feature
+git flow feature start ma-feature
+
+# Quand c'est pret : push et PR vers develop
+git push -u origin feature/ma-feature
 ```
-Please make all test go green before asking for a PR.
 
-## git specific
-
-This repo use [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html)
-and `devlop` is set as default branch.
+Voir `docs/pr-conventions.md` pour les conventions de messages de PR.

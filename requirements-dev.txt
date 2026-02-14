@@ -4,6 +4,10 @@
 # Dépendances de test BDD
 mamba
 expects
+coverage
+
+# Git hooks
+lefthook
 
 # Autres outils de dev (optionnel)
 # black>=22.0.0

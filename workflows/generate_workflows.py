@@ -883,18 +883,19 @@ def build_comp_gradient_compare():
 # Registre des workflows et génération
 # =============================================================================
 
-WORKFLOWS = {
-    "test_sort_palette": build_sort_palette,
-    "test_gradient_between": build_gradient_between,
-    "test_create_gradient_palette": build_create_gradient_palette,
-    "test_palette_view": build_palette_view,
-    "test_replace_color_at": build_replace_color_at,
-    "test_mix_colors": build_mix_colors,
-    "test_color_preview": build_color_preview,
-    "test_palette_formatter": build_palette_formatter,
-    "test_comp_full_pipeline": build_comp_full_pipeline,
-    "test_comp_gradient_compare": build_comp_gradient_compare,
-}
+# Ordre : nodes simples (couleur) → nodes palette → compositions
+WORKFLOWS = [
+    ("01_test_color_preview",           build_color_preview),
+    ("02_test_mix_colors",              build_mix_colors),
+    ("03_test_create_gradient_palette", build_create_gradient_palette),
+    ("04_test_sort_palette",            build_sort_palette),
+    ("05_test_gradient_between",        build_gradient_between),
+    ("06_test_replace_color_at",        build_replace_color_at),
+    ("07_test_palette_view",            build_palette_view),
+    ("08_test_palette_formatter",       build_palette_formatter),
+    ("09_test_comp_full_pipeline",      build_comp_full_pipeline),
+    ("10_test_comp_gradient_compare",   build_comp_gradient_compare),
+]
 
 
 def generate_all():
@@ -906,7 +907,7 @@ def generate_all():
     os.makedirs(test_dir, exist_ok=True)
     os.makedirs(api_dir, exist_ok=True)
 
-    for name, builder_fn in WORKFLOWS.items():
+    for name, builder_fn in WORKFLOWS:
         wb = builder_fn()
 
         # Format UI
