@@ -105,7 +105,10 @@ Ajouter un nouveau format = créer la classe + l'importer dans le `__init__.py` 
 ### Git
 - Git Flow : branches `feature/*`, `release/*`, `hotfix/*`
 - Branche par défaut : `develop` (attention : master existe aussi)
+- **Lefthook** : pre-commit lance `mamba spec/` automatiquement
+- **CI** : GitHub Actions sur push/PR (Python 3.10/3.11/3.12)
 - Tests verts obligatoires avant PR
+- Conventions PR : voir `docs/pr-conventions.md`
 
 ## Types ComfyUI custom
 
