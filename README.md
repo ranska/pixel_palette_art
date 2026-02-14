@@ -3,28 +3,36 @@ Comfyui custom node: Set of tools for pixel art palette.
 
 # Nodes
 
-## gimp_gpl_loader
+## Color Preview
 
-load a gpl palette file. They must be for now in the `input` folder.
+Cree une image de previsualisation d'une couleur avec son code hex (ou rgb, hsl, css) en overlay.
+Options : taille du texte, position, couleur auto (noir/blanc selon luminosite).
 
-You can find a lot of gpl here [lospec](https://lospec.com/)
+![color preview workflow](docs/screenshots/01_color_preview_workflow.png)
+
+![color preview result](docs/screenshots/01_color_preview_result.png)
+
+## Gimp GPL Loader
+
+Charge un fichier palette `.gpl` (format GIMP). Les fichiers doivent etre dans le dossier `input`.
+
+Beaucoup de palettes `.gpl` sont disponibles sur [lospec](https://lospec.com/).
 
 __if you know how to upload a file please PR or open an issue__
 
 ![palette node](docs/gimp_gpl_loader.png)
 
-## Color creation
+## Color Creation
 
-You can create rgb color, and export it as text or image.
+Cree une couleur RGB avec nom optionnel, et l'exporte en texte ou image.
 
 ![color node](docs/create_color.png)
 
-## Color mixer
+## Color Mixer
 
-The most inportant concept of this custom_nodes pack.
+Le concept central de ce pack de nodes.
 
-You can mix 2 colors and get a 3rd one.
-For now there is rgb and hsv color_space mixer but I want to add more.
+Mixe 2 couleurs pour en obtenir une 3e, avec interpolation RGB ou HSV.
 
 ![color node](docs/mix_colors.png)
 
