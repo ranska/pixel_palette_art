@@ -220,6 +220,37 @@ class WorkflowBuilder:
             pos=pos, size=[250, 120],
         )
 
+    def add_copy_subset(self, start_index=0, end_index=3, pos=(0, 0)):
+        """Ajoute un CopySubsetNode."""
+        return self.add_node(
+            "CopySubsetNode", f"Subset [{start_index}:{end_index}]",
+            widgets={"start_index": start_index, "end_index": end_index},
+            pos=pos, size=[250, 120],
+        )
+
+    def add_append_palette(self, pos=(0, 0)):
+        """Ajoute un AppendPaletteNode."""
+        return self.add_node(
+            "AppendPaletteNode", "Append",
+            pos=pos, size=[250, 100],
+        )
+
+    def add_insert_palette(self, index=0, pos=(0, 0)):
+        """Ajoute un InsertPaletteNode."""
+        return self.add_node(
+            "InsertPaletteNode", f"Insert @{index}",
+            widgets={"index": index},
+            pos=pos, size=[250, 120],
+        )
+
+    def add_mix_palette(self, ratio=0.5, color_space="rgb", offset=0, pos=(0, 0)):
+        """Ajoute un MixPaletteNode."""
+        return self.add_node(
+            "MixPaletteNode", f"Mix Palettes ({color_space}, {ratio})",
+            widgets={"ratio": ratio, "color_space": color_space, "offset": offset},
+            pos=pos, size=[280, 150],
+        )
+
     # --- Export formats ---
 
     def _build_node_inputs(self, node_id):
@@ -296,6 +327,31 @@ class WorkflowBuilder:
             "PreviewImage": {
                 "inputs": [("IMAGE", "images")],
                 "outputs": [],
+            },
+            "CopySubsetNode": {
+                "inputs": [("PIXEL_PALETTE", "palette")],
+                "outputs": [("PIXEL_PALETTE", "subset")],
+            },
+            "AppendPaletteNode": {
+                "inputs": [
+                    ("PIXEL_PALETTE", "palette_a"),
+                    ("PIXEL_PALETTE", "palette_b"),
+                ],
+                "outputs": [("PIXEL_PALETTE", "combined_palette")],
+            },
+            "InsertPaletteNode": {
+                "inputs": [
+                    ("PIXEL_PALETTE", "palette"),
+                    ("PIXEL_PALETTE", "sub_palette"),
+                ],
+                "outputs": [("PIXEL_PALETTE", "modified_palette")],
+            },
+            "MixPaletteNode": {
+                "inputs": [
+                    ("PIXEL_PALETTE", "palette_a"),
+                    ("PIXEL_PALETTE", "palette_b"),
+                ],
+                "outputs": [("PIXEL_PALETTE", "mixed_palette")],
             },
             "Note": {
                 "inputs": [],
@@ -879,6 +935,221 @@ def build_comp_gradient_compare():
     return wb
 
 
+# --- Workflow 11 : test_copy_subset ---
+
+def build_copy_subset():
+    wb = WorkflowBuilder("Test \u2014 CopySubsetNode")
+
+    note_fr, note_en = make_notes(
+        "Extraction d'un sous-ensemble de couleurs d'une palette.\n"
+        "Un d\u00e9grad\u00e9 de 8 couleurs est cr\u00e9\u00e9, puis les couleurs\n"
+        "des indices 2 \u00e0 5 sont extraites dans une nouvelle palette.\n"
+        "Comparez la palette compl\u00e8te et le sous-ensemble.",
+        "Extracting a subset of colors from a palette.\n"
+        "An 8-color gradient is created, then colors\n"
+        "at indices 2 to 5 are extracted into a new palette.\n"
+        "Compare the full palette and the subset.",
+        ["CreateColorFromRGBNode", "CreateGradientPaletteNode",
+         "CopySubsetNode", "PaletteViewNode"],
+    )
+    wb.add_note_fr(note_fr, pos=(0, 0))
+    wb.add_note_en(note_en, pos=(0, 230))
+
+    # Source
+    c_red = wb.add_color_rgb(255, 50, 0, "Rouge", pos=(0, 500))
+    c_blue = wb.add_color_rgb(0, 100, 255, "Bleu", pos=(0, 700))
+
+    grad = wb.add_gradient_palette(8, "hsv", pos=(320, 580))
+    wb.link(c_red, 0, grad, 0, "PIXEL_COLOR")
+    wb.link(c_blue, 0, grad, 1, "PIXEL_COLOR")
+
+    # Vue avant
+    view_before = wb.add_palette_view(
+        "horizontal", 48, 8, show_indices=True, pos=(660, 480))
+    wb.link(grad, 0, view_before, 0, "PIXEL_PALETTE")
+    pv_before = wb.add_preview_image(pos=(1000, 400))
+    wb.link(view_before, 0, pv_before, 0, "IMAGE")
+
+    # Copy subset [2:5]
+    subset = wb.add_copy_subset(2, 5, pos=(660, 660))
+    wb.link(grad, 0, subset, 0, "PIXEL_PALETTE")
+
+    # Vue subset
+    view_after = wb.add_palette_view(
+        "horizontal", 48, 8, show_indices=True, pos=(1000, 600))
+    wb.link(subset, 0, view_after, 0, "PIXEL_PALETTE")
+    pv_after = wb.add_preview_image(pos=(1340, 520))
+    wb.link(view_after, 0, pv_after, 0, "IMAGE")
+
+    return wb
+
+
+# --- Workflow 12 : test_append_palette ---
+
+def build_append_palette():
+    wb = WorkflowBuilder("Test \u2014 AppendPaletteNode")
+
+    note_fr, note_en = make_notes(
+        "Combinaison de deux palettes bout \u00e0 bout.\n"
+        "Deux petits d\u00e9grad\u00e9s (rouge\u2192jaune 4c, bleu\u2192vert 4c)\n"
+        "sont combin\u00e9s en une seule palette de 8 couleurs.",
+        "Combining two palettes end to end.\n"
+        "Two small gradients (red\u2192yellow 4c, blue\u2192green 4c)\n"
+        "are combined into a single 8-color palette.",
+        ["CreateColorFromRGBNode", "CreateGradientPaletteNode",
+         "AppendPaletteNode", "PaletteViewNode"],
+    )
+    wb.add_note_fr(note_fr, pos=(0, 0))
+    wb.add_note_en(note_en, pos=(0, 230))
+
+    # Gradient A : rouge → jaune
+    c_red = wb.add_color_rgb(255, 30, 0, "Rouge", pos=(0, 500))
+    c_yellow = wb.add_color_rgb(255, 230, 0, "Jaune", pos=(0, 700))
+
+    grad_a = wb.add_gradient_palette(4, "rgb", pos=(320, 500))
+    wb.link(c_red, 0, grad_a, 0, "PIXEL_COLOR")
+    wb.link(c_yellow, 0, grad_a, 1, "PIXEL_COLOR")
+
+    # Gradient B : bleu → vert
+    c_blue = wb.add_color_rgb(0, 50, 255, "Bleu", pos=(0, 900))
+    c_green = wb.add_color_rgb(0, 220, 80, "Vert", pos=(0, 1100))
+
+    grad_b = wb.add_gradient_palette(4, "rgb", pos=(320, 900))
+    wb.link(c_blue, 0, grad_b, 0, "PIXEL_COLOR")
+    wb.link(c_green, 0, grad_b, 1, "PIXEL_COLOR")
+
+    # Append
+    append = wb.add_append_palette(pos=(660, 680))
+    wb.link(grad_a, 0, append, 0, "PIXEL_PALETTE")
+    wb.link(grad_b, 0, append, 1, "PIXEL_PALETTE")
+
+    # Vue résultat
+    view_result = wb.add_palette_view(
+        "horizontal", 48, 8, show_indices=True, pos=(1000, 620))
+    wb.link(append, 0, view_result, 0, "PIXEL_PALETTE")
+    pv_result = wb.add_preview_image(pos=(1340, 540))
+    wb.link(view_result, 0, pv_result, 0, "IMAGE")
+
+    return wb
+
+
+# --- Workflow 13 : test_insert_palette ---
+
+def build_insert_palette():
+    wb = WorkflowBuilder("Test \u2014 InsertPaletteNode")
+
+    note_fr, note_en = make_notes(
+        "Insertion de couleurs dans une palette existante.\n"
+        "Un d\u00e9grad\u00e9 de 6 couleurs (rouge\u2192bleu) est cr\u00e9\u00e9,\n"
+        "puis 2 couleurs vertes sont ins\u00e9r\u00e9es \u00e0 l'index 3.\n"
+        "Comparez les vues avant et apr\u00e8s l'insertion.",
+        "Inserting colors into an existing palette.\n"
+        "A 6-color gradient (red\u2192blue) is created,\n"
+        "then 2 green colors are inserted at index 3.\n"
+        "Compare the views before and after insertion.",
+        ["CreateColorFromRGBNode", "CreateGradientPaletteNode",
+         "InsertPaletteNode", "PaletteViewNode"],
+    )
+    wb.add_note_fr(note_fr, pos=(0, 0))
+    wb.add_note_en(note_en, pos=(0, 230))
+
+    # Palette principale
+    c_red = wb.add_color_rgb(230, 40, 40, "Rouge", pos=(0, 500))
+    c_blue = wb.add_color_rgb(40, 40, 230, "Bleu", pos=(0, 700))
+
+    grad = wb.add_gradient_palette(6, "rgb", pos=(320, 580))
+    wb.link(c_red, 0, grad, 0, "PIXEL_COLOR")
+    wb.link(c_blue, 0, grad, 1, "PIXEL_COLOR")
+
+    # Vue avant
+    view_before = wb.add_palette_view(
+        "horizontal", 48, 8, show_indices=True, pos=(660, 480))
+    wb.link(grad, 0, view_before, 0, "PIXEL_PALETTE")
+    pv_before = wb.add_preview_image(pos=(1000, 400))
+    wb.link(view_before, 0, pv_before, 0, "IMAGE")
+
+    # Sous-palette à insérer
+    c_green1 = wb.add_color_rgb(0, 200, 50, "Vert clair", pos=(0, 920))
+    c_green2 = wb.add_color_rgb(0, 150, 30, "Vert fonc\u00e9", pos=(0, 1120))
+
+    sub_grad = wb.add_gradient_palette(2, "rgb", pos=(320, 1000))
+    wb.link(c_green1, 0, sub_grad, 0, "PIXEL_COLOR")
+    wb.link(c_green2, 0, sub_grad, 1, "PIXEL_COLOR")
+
+    # Insert à l'index 3
+    insert = wb.add_insert_palette(3, pos=(660, 700))
+    wb.link(grad, 0, insert, 0, "PIXEL_PALETTE")
+    wb.link(sub_grad, 0, insert, 1, "PIXEL_PALETTE")
+
+    # Vue après
+    view_after = wb.add_palette_view(
+        "horizontal", 48, 8, show_indices=True, pos=(1000, 640))
+    wb.link(insert, 0, view_after, 0, "PIXEL_PALETTE")
+    pv_after = wb.add_preview_image(pos=(1340, 560))
+    wb.link(view_after, 0, pv_after, 0, "IMAGE")
+
+    return wb
+
+
+# --- Workflow 14 : test_mix_palette ---
+
+def build_mix_palette():
+    wb = WorkflowBuilder("Test \u2014 MixPaletteNode")
+
+    note_fr, note_en = make_notes(
+        "M\u00e9lange de deux palettes couleur par couleur.\n"
+        "Deux d\u00e9grad\u00e9s de m\u00eame taille sont mix\u00e9s \u00e0 50%%\n"
+        "en RGB et en HSV pour comparer les r\u00e9sultats.",
+        "Mixing two palettes color by color.\n"
+        "Two same-size gradients are mixed at 50%%\n"
+        "in RGB and HSV to compare the results.",
+        ["CreateColorFromRGBNode", "CreateGradientPaletteNode",
+         "MixPaletteNode", "PaletteViewNode"],
+    )
+    wb.add_note_fr(note_fr, pos=(0, 0))
+    wb.add_note_en(note_en, pos=(0, 230))
+
+    # Gradient A : rouge → jaune
+    c_red = wb.add_color_rgb(255, 0, 0, "Rouge", pos=(0, 500))
+    c_yellow = wb.add_color_rgb(255, 255, 0, "Jaune", pos=(0, 700))
+
+    grad_a = wb.add_gradient_palette(6, "rgb", pos=(320, 500))
+    wb.link(c_red, 0, grad_a, 0, "PIXEL_COLOR")
+    wb.link(c_yellow, 0, grad_a, 1, "PIXEL_COLOR")
+
+    # Gradient B : bleu → cyan
+    c_blue = wb.add_color_rgb(0, 0, 255, "Bleu", pos=(0, 920))
+    c_cyan = wb.add_color_rgb(0, 255, 255, "Cyan", pos=(0, 1120))
+
+    grad_b = wb.add_gradient_palette(6, "rgb", pos=(320, 920))
+    wb.link(c_blue, 0, grad_b, 0, "PIXEL_COLOR")
+    wb.link(c_cyan, 0, grad_b, 1, "PIXEL_COLOR")
+
+    # Mix RGB 50%
+    mix_rgb = wb.add_mix_palette(0.5, "rgb", 0, pos=(660, 500))
+    wb.link(grad_a, 0, mix_rgb, 0, "PIXEL_PALETTE")
+    wb.link(grad_b, 0, mix_rgb, 1, "PIXEL_PALETTE")
+
+    view_rgb = wb.add_palette_view(
+        "horizontal", 48, 6, show_hex=True, pos=(1000, 460))
+    wb.link(mix_rgb, 0, view_rgb, 0, "PIXEL_PALETTE")
+    pv_rgb = wb.add_preview_image(pos=(1340, 380))
+    wb.link(view_rgb, 0, pv_rgb, 0, "IMAGE")
+
+    # Mix HSV 50%
+    mix_hsv = wb.add_mix_palette(0.5, "hsv", 0, pos=(660, 760))
+    wb.link(grad_a, 0, mix_hsv, 0, "PIXEL_PALETTE")
+    wb.link(grad_b, 0, mix_hsv, 1, "PIXEL_PALETTE")
+
+    view_hsv = wb.add_palette_view(
+        "horizontal", 48, 6, show_hex=True, pos=(1000, 700))
+    wb.link(mix_hsv, 0, view_hsv, 0, "PIXEL_PALETTE")
+    pv_hsv = wb.add_preview_image(pos=(1340, 620))
+    wb.link(view_hsv, 0, pv_hsv, 0, "IMAGE")
+
+    return wb
+
+
 # =============================================================================
 # Registre des workflows et génération
 # =============================================================================
@@ -895,6 +1166,10 @@ WORKFLOWS = [
     ("08_test_palette_formatter",       build_palette_formatter),
     ("09_test_comp_full_pipeline",      build_comp_full_pipeline),
     ("10_test_comp_gradient_compare",   build_comp_gradient_compare),
+    ("11_test_copy_subset",             build_copy_subset),
+    ("12_test_append_palette",          build_append_palette),
+    ("13_test_insert_palette",          build_insert_palette),
+    ("14_test_mix_palette",             build_mix_palette),
 ]
 
 

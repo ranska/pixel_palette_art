@@ -1,0 +1,419 @@
+{
+  "last_node_id": 10,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Note",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "Note FR",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇫🇷 FRANÇAIS\n─────────────\nExtraction d'un sous-ensemble de couleurs d'une palette.\nUn dégradé de 8 couleurs est créé, puis les couleurs\ndes indices 2 à 5 sont extraites dans une nouvelle palette.\nComparez la palette complète et le sous-ensemble.\n\n⚡ Nodes utilisés : CreateColorFromRGBNode, CreateGradientPaletteNode, CopySubsetNode, PaletteViewNode"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 2,
+      "type": "Note",
+      "pos": [
+        0,
+        230
+      ],
+      "size": [
+        350,
+        200
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "Note EN",
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "🇬🇧 ENGLISH\n─────────────\nExtracting a subset of colors from a palette.\nAn 8-color gradient is created, then colors\nat indices 2 to 5 are extracted into a new palette.\nCompare the full palette and the subset.\n\n⚡ Nodes used: CreateColorFromRGBNode, CreateGradientPaletteNode, CopySubsetNode, PaletteViewNode"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 3,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        500
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "title": "Rouge",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        255,
+        50,
+        0,
+        "Rouge"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CreateColorFromRGBNode",
+      "pos": [
+        0,
+        700
+      ],
+      "size": [
+        250,
+        170
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "color",
+          "type": "PIXEL_COLOR",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "title": "Bleu",
+      "properties": {
+        "Node name for S&R": "CreateColorFromRGBNode"
+      },
+      "widgets_values": [
+        0,
+        100,
+        255,
+        "Bleu"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "CreateGradientPaletteNode",
+      "pos": [
+        320,
+        580
+      ],
+      "size": [
+        280,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "color_start",
+          "type": "PIXEL_COLOR",
+          "link": 1
+        },
+        {
+          "name": "color_end",
+          "type": "PIXEL_COLOR",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "gradient_palette",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            3,
+            5
+          ]
+        }
+      ],
+      "title": "Gradient 8 (HSV)",
+      "properties": {
+        "Node name for S&R": "CreateGradientPaletteNode"
+      },
+      "widgets_values": [
+        8,
+        "hsv"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PaletteViewNode",
+      "pos": [
+        660,
+        480
+      ],
+      "size": [
+        280,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "title": "View (horizontal)",
+      "properties": {
+        "Node name for S&R": "PaletteViewNode"
+      },
+      "widgets_values": [
+        "horizontal",
+        48,
+        8,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [
+        1000,
+        400
+      ],
+      "size": [
+        250,
+        280
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "title": "Preview",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 8,
+      "type": "CopySubsetNode",
+      "pos": [
+        660,
+        660
+      ],
+      "size": [
+        250,
+        120
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "subset",
+          "type": "PIXEL_PALETTE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "title": "Subset [2:5]",
+      "properties": {
+        "Node name for S&R": "CopySubsetNode"
+      },
+      "widgets_values": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": 9,
+      "type": "PaletteViewNode",
+      "pos": [
+        1000,
+        600
+      ],
+      "size": [
+        280,
+        200
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "palette",
+          "type": "PIXEL_PALETTE",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "title": "View (horizontal)",
+      "properties": {
+        "Node name for S&R": "PaletteViewNode"
+      },
+      "widgets_values": [
+        "horizontal",
+        48,
+        8,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        1340,
+        520
+      ],
+      "size": [
+        250,
+        280
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 7
+        }
+      ],
+      "title": "Preview",
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      3,
+      0,
+      5,
+      0,
+      "PIXEL_COLOR"
+    ],
+    [
+      2,
+      4,
+      0,
+      5,
+      1,
+      "PIXEL_COLOR"
+    ],
+    [
+      3,
+      5,
+      0,
+      6,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      5,
+      0,
+      8,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      6,
+      8,
+      0,
+      9,
+      0,
+      "PIXEL_PALETTE"
+    ],
+    [
+      7,
+      9,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    },
+    "info": {
+      "title": "Test — CopySubsetNode"
+    }
+  },
+  "version": 0.4
+}

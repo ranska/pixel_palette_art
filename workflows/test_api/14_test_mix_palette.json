@@ -1,0 +1,184 @@
+{
+  "3": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 255,
+      "green": 0,
+      "blue": 0,
+      "color_name": "Rouge"
+    },
+    "_meta": {
+      "title": "Rouge"
+    }
+  },
+  "4": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 255,
+      "green": 255,
+      "blue": 0,
+      "color_name": "Jaune"
+    },
+    "_meta": {
+      "title": "Jaune"
+    }
+  },
+  "5": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 6,
+      "color_space": "rgb",
+      "color_start": [
+        "3",
+        0
+      ],
+      "color_end": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 6 (RGB)"
+    }
+  },
+  "6": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 0,
+      "green": 0,
+      "blue": 255,
+      "color_name": "Bleu"
+    },
+    "_meta": {
+      "title": "Bleu"
+    }
+  },
+  "7": {
+    "class_type": "CreateColorFromRGBNode",
+    "inputs": {
+      "red": 0,
+      "green": 255,
+      "blue": 255,
+      "color_name": "Cyan"
+    },
+    "_meta": {
+      "title": "Cyan"
+    }
+  },
+  "8": {
+    "class_type": "CreateGradientPaletteNode",
+    "inputs": {
+      "num_colors": 6,
+      "color_space": "rgb",
+      "color_start": [
+        "6",
+        0
+      ],
+      "color_end": [
+        "7",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Gradient 6 (RGB)"
+    }
+  },
+  "9": {
+    "class_type": "MixPaletteNode",
+    "inputs": {
+      "ratio": 0.5,
+      "color_space": "rgb",
+      "offset": 0,
+      "palette_a": [
+        "5",
+        0
+      ],
+      "palette_b": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Mix Palettes (rgb, 0.5)"
+    }
+  },
+  "10": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 6,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": true,
+      "palette": [
+        "9",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "11": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "12": {
+    "class_type": "MixPaletteNode",
+    "inputs": {
+      "ratio": 0.5,
+      "color_space": "hsv",
+      "offset": 0,
+      "palette_a": [
+        "5",
+        0
+      ],
+      "palette_b": [
+        "8",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Mix Palettes (hsv, 0.5)"
+    }
+  },
+  "13": {
+    "class_type": "PaletteViewNode",
+    "inputs": {
+      "layout": "horizontal",
+      "cell_size": 48,
+      "columns": 6,
+      "show_names": false,
+      "show_indices": false,
+      "show_hex": true,
+      "palette": [
+        "12",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "View (horizontal)"
+    }
+  },
+  "14": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "13",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Preview"
+    }
+  }
+}

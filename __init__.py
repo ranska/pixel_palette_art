@@ -8,7 +8,8 @@ from .nodes import (GimpPaletteLoaderNode, PaletteFormatterNode,
                      ColorFormatterNode, ColorPreviewNode, MixColorsNode,
                      ReplaceColorAtNode, SortPaletteNode,
                      GradientBetweenNode, CreateGradientPaletteNode,
-                     PaletteViewNode)
+                     PaletteViewNode, CopySubsetNode, AppendPaletteNode,
+                     InsertPaletteNode, MixPaletteNode)
 
 NODE_CLASS_MAPPINGS = {
     "GimpPaletteLoader":        GimpPaletteLoaderNode,
@@ -23,6 +24,10 @@ NODE_CLASS_MAPPINGS = {
     "GradientBetweenNode":      GradientBetweenNode,
     "CreateGradientPaletteNode": CreateGradientPaletteNode,
     "PaletteViewNode":          PaletteViewNode,
+    "CopySubsetNode":           CopySubsetNode,
+    "AppendPaletteNode":        AppendPaletteNode,
+    "InsertPaletteNode":        InsertPaletteNode,
+    "MixPaletteNode":           MixPaletteNode,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -38,6 +43,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "GradientBetweenNode":      "Gradient Between Indices",
     "CreateGradientPaletteNode": "Create Gradient Palette",
     "PaletteViewNode":          "Palette View",
+    "CopySubsetNode":           "Copy Subset",
+    "AppendPaletteNode":        "Append Palette",
+    "InsertPaletteNode":        "Insert Palette At Index",
+    "MixPaletteNode":           "Mix Palettes",
 }
 
 # Métadonnées de l'extension

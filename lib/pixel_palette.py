@@ -247,6 +247,105 @@ class PixelPalette:
             original_name = self.colors[current_index].name
             self.colors[current_index] = PixelColor(new_r, new_g, new_b, original_name)
     
+    # === Manipulation de palettes ===
+
+    def copy_subset(self, start: int, end: int) -> 'PixelPalette':
+        """
+        Retourne une nouvelle palette contenant les couleurs de start à end (inclusif)
+
+        Args:
+            start: Index de début (inclusif)
+            end: Index de fin (inclusif)
+
+        Returns:
+            PixelPalette: Nouvelle palette avec le sous-ensemble de couleurs
+
+        Raises:
+            ValueError: Si start > end
+            IndexError: Si les bornes sont hors limites
+        """
+        if start > end:
+            raise ValueError("start doit être inférieur ou égal à end")
+        if start < 0 or end >= len(self.colors):
+            raise IndexError("Index hors limites")
+
+        subset_colors = [c.create_copy() for c in self.colors[start:end + 1]]
+        return PixelPalette(colors=subset_colors)
+
+    def append_palette(self, other: 'PixelPalette') -> 'PixelPalette':
+        """
+        Retourne une nouvelle palette = self.colors + other.colors
+
+        Args:
+            other: Palette à ajouter à la fin
+
+        Returns:
+            PixelPalette: Nouvelle palette combinée
+        """
+        combined = [c.create_copy() for c in self.colors] + \
+                   [c.create_copy() for c in other.colors]
+        name = f"{self.name} + {other.name}"
+        return PixelPalette(name=name, colors=combined)
+
+    def insert_palette(self, other: 'PixelPalette', index: int) -> 'PixelPalette':
+        """
+        Retourne une nouvelle palette avec other.colors insérées à l'index donné
+
+        Args:
+            other: Palette à insérer
+            index: Position d'insertion (0 = début, len(self) = fin)
+
+        Returns:
+            PixelPalette: Nouvelle palette avec les couleurs insérées
+
+        Raises:
+            IndexError: Si index hors de [0, len(self)]
+        """
+        if index < 0 or index > len(self.colors):
+            raise IndexError("Index d'insertion hors limites")
+
+        before = [c.create_copy() for c in self.colors[:index]]
+        inserted = [c.create_copy() for c in other.colors]
+        after = [c.create_copy() for c in self.colors[index:]]
+        return PixelPalette(colors=before + inserted + after)
+
+    def mix_with_palette(self, other: 'PixelPalette', ratio: float = 0.5,
+                         color_space: str = "rgb", offset: int = 0) -> 'PixelPalette':
+        """
+        Mixe couleur par couleur avec une autre palette (position + offset)
+
+        Les couleurs sans correspondance (taille différente) sont copiées telles quelles.
+
+        Args:
+            other: Palette avec laquelle mixer
+            ratio: Ratio du mélange (0.0 = tout self, 1.0 = tout other)
+            color_space: Espace colorimétrique pour le mélange
+            offset: Décalage d'index appliqué à other
+
+        Returns:
+            PixelPalette: Nouvelle palette mixée
+        """
+        from .color.color_space_registry import ColorSpaceRegistry
+        mixer = ColorSpaceRegistry.get_mixer_class(color_space)
+
+        max_len = max(len(self.colors), len(other.colors) + offset)
+        result_colors = []
+
+        for i in range(max_len):
+            has_self = i < len(self.colors)
+            other_idx = i - offset
+            has_other = 0 <= other_idx < len(other.colors)
+
+            if has_self and has_other:
+                r, g, b = mixer.mix_with(self.colors[i], other.colors[other_idx], ratio)
+                result_colors.append(PixelColor(r, g, b))
+            elif has_self:
+                result_colors.append(self.colors[i].create_copy())
+            elif has_other:
+                result_colors.append(other.colors[other_idx].create_copy())
+
+        return PixelPalette(colors=result_colors)
+
     # === Export ===
 
     def to_list(self, format_type: str = "hex", include_names: bool = False) -> List[str]:
