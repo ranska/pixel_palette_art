@@ -9,3 +9,5 @@ omit =
     nodes.py
     mamba_config.py
     setup.py
+    demo_gradient.py
+    test_node_import.py
