@@ -1,5 +1,45 @@
 # Conventions pour les Pull Requests
 
+## Git Flow
+
+### Workflow obligatoire
+
+Toutes les PR doivent cibler **develop**. Jamais master directement.
+
+```bash
+# 1. Partir de develop a jour
+git checkout develop
+git pull origin develop
+
+# 2. Creer une branche feature
+git checkout -b feature/<nom-descriptif>
+
+# 3. Travailler, commiter
+# ... commits ...
+
+# 4. Pousser la branche
+git push -u origin feature/<nom-descriptif>
+
+# 5. Creer la PR vers develop
+gh pr create --base develop --title "..."
+
+# 6. Apres merge, nettoyer
+git checkout develop
+git pull origin develop
+git branch -d feature/<nom-descriptif>
+```
+
+### Releases
+
+Les releases se font en mergeant develop → master et en taguant :
+
+```bash
+git checkout master
+git merge develop
+git tag v0.x.x
+git push origin master --tags
+```
+
 ## Structure du message
 
 Chaque PR doit contenir deux sections, une en francais et une en anglais,
@@ -34,7 +74,8 @@ Description in english...
 - [ ] Tests mamba au vert (`mamba spec/ --enable-coverage --format=documentation`)
 - [ ] Pas de secrets ou fichiers temporaires dans le diff
 - [ ] Message de commit propre (pas de reference IA)
-- [ ] Branche a jour avec develop
+- [ ] Branche feature creee depuis develop a jour
+- [ ] PR cible develop (pas master)
 
 ## Exemple complet
 

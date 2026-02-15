@@ -102,9 +102,17 @@ Ajouter un nouveau format = créer la classe + l'importer dans le `__init__.py` 
 - Context managers pour les operations temporaires
 - ABC (Abstract Base Class) pour les interfaces
 
-### Git
-- Git Flow : branches `feature/*`, `release/*`, `hotfix/*`
-- Branche par défaut : `develop` (attention : master existe aussi)
+### Git Flow (IMPORTANT)
+- Branche principale de travail : **develop**
+- `master` = releases uniquement (tags), ne jamais PR directement vers master
+- Workflow obligatoire pour chaque feature/fix :
+  1. `git pull origin develop` (toujours partir de develop a jour)
+  2. `git checkout -b feature/<nom>` (creer une branche feature)
+  3. Travailler, commiter sur la branche feature
+  4. `git push -u origin feature/<nom>`
+  5. Creer la PR **vers develop** (jamais vers master)
+  6. Apres merge, supprimer la branche feature
+- Releases : quand develop est stable, merge develop → master et taguer
 - **Lefthook** : pre-commit lance `mamba spec/` automatiquement
 - **CI** : GitHub Actions sur push/PR (Python 3.10/3.11/3.12)
 - Tests verts obligatoires avant PR
