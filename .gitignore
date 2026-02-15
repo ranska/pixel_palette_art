@@ -36,3 +36,6 @@ Thumbs.db
 # coverage
 .coverage
 
+# MCP config
+.mcp.json
+
