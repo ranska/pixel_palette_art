@@ -50,6 +50,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 # Métadonnées de l'extension
-__version__     = "0.0.3"
+__version__     = "0.0.4"
 __author__      = "Ranska"
 __description__ = "Extension pour gérer les palettes de pixel art dans ComfyUI"

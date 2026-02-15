@@ -3,7 +3,7 @@
 ## Vue d'ensemble
 
 Extension ComfyUI (custom nodes) pour la manipulation de palettes de couleurs pixel art.
-Auteur : Ranska | Version : 0.0.3 | Licence : open source
+Auteur : Ranska | Version : 0.0.4 | Licence : open source
 
 ## Commandes essentielles
 
