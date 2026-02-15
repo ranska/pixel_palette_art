@@ -112,7 +112,7 @@ Ajouter un nouveau format = créer la classe + l'importer dans le `__init__.py` 
   4. `git push -u origin feature/<nom>`
   5. Creer la PR **vers develop** (jamais vers master)
   6. Apres merge, supprimer la branche feature
-- Releases : quand develop est stable, merge develop → master et taguer
+- Releases : merge develop → master et tag uniquement quand le nombre d'ajouts est significatif (pas a chaque petit commit)
 - **Lefthook** : pre-commit lance `mamba spec/` automatiquement
 - **CI** : GitHub Actions sur push/PR (Python 3.10/3.11/3.12)
 - Tests verts obligatoires avant PR
