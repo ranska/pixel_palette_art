@@ -13,7 +13,9 @@ from .color_preview_node           import ColorPreviewNode
 from .mix_colors_node              import MixColorsNode
 from .palette                      import (ReplaceColorAtNode, SortPaletteNode,
                                            GradientBetweenNode, CreateGradientPaletteNode,
-                                           PaletteViewNode)
+                                           PaletteViewNode, CopySubsetNode,
+                                           AppendPaletteNode, InsertPaletteNode,
+                                           MixPaletteNode)
 
 __all__ = [
     'GimpPaletteLoaderNode',
@@ -28,4 +30,8 @@ __all__ = [
     "GradientBetweenNode",
     "CreateGradientPaletteNode",
     "PaletteViewNode",
+    "CopySubsetNode",
+    "AppendPaletteNode",
+    "InsertPaletteNode",
+    "MixPaletteNode",
 ]

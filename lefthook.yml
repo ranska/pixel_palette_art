@@ -1,0 +1,9 @@
+# lefthook.yml
+# Hook pre-commit : lance les tests mamba avant chaque commit
+# Installation : lefthook install
+
+pre-commit:
+  commands:
+    mamba-tests:
+      run: mamba spec/ --format=documentation
+      fail_text: "Les tests mamba ont echoue. Corrigez les avant de commiter."
