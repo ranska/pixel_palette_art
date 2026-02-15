@@ -1,91 +1,105 @@
 # Pixel Palette Art
-Comfyui custom node: Set of tools for pixel art palette.
 
-# Nodes
+A set of ComfyUI custom nodes for pixel art color and palette manipulation.
 
-## Color Preview
+Create colors, mix them in RGB or HSV, build gradients, sort and edit palettes, then export to GIMP, hex, or any format you need.
 
-Cree une image de previsualisation d'une couleur avec son code hex (ou rgb, hsl, css) en overlay.
-Options : taille du texte, position, couleur auto (noir/blanc selon luminosite).
+![Full pipeline example](docs/screenshots/09_comp_full_pipeline_result.png)
 
-![color preview workflow](docs/screenshots/01_color_preview_workflow.png)
+## Installation
 
-![color preview result](docs/screenshots/01_color_preview_result.png)
+Clone this repository into your ComfyUI `custom_nodes` directory:
 
-## Gimp GPL Loader
+```bash
+cd ComfyUI/custom_nodes
+git clone https://github.com/ranska/pixel_palette_art.git
+```
 
-Charge un fichier palette `.gpl` (format GIMP). Les fichiers doivent etre dans le dossier `input`.
+Restart ComfyUI. The nodes will appear under the `pixel_art` category.
 
-Beaucoup de palettes `.gpl` sont disponibles sur [lospec](https://lospec.com/).
+## Nodes
 
-__if you know how to upload a file please PR or open an issue__
+### Colors (`pixel_art/colors`)
 
-![palette node](docs/gimp_gpl_loader.png)
+| Node | Description | Doc |
+|------|-------------|-----|
+| Create Color From RGB | Create a color from R, G, B values | [doc](docs/nodes/create_color_from_rgb.md) |
+| Mix Colors | Blend two colors in RGB or HSV | [doc](docs/nodes/mix_colors.md) |
 
-## Color Creation
+### Palette (`pixel_art/palette`)
 
-Cree une couleur RGB avec nom optionnel, et l'exporte en texte ou image.
+| Node | Description | Doc |
+|------|-------------|-----|
+| Create Gradient Palette | Generate a gradient between two colors | [doc](docs/nodes/create_gradient_palette.md) |
+| Sort Palette | Sort colors by hue or brightness | [doc](docs/nodes/sort_palette.md) |
+| Gradient Between Indices | Interpolate between two palette positions | [doc](docs/nodes/gradient_between.md) |
+| Replace Color At Index | Replace a single color in a palette | [doc](docs/nodes/replace_color_at.md) |
+| Copy Subset | Extract a range of colors from a palette | [doc](docs/nodes/copy_subset.md) |
+| Append Palette | Concatenate two palettes | [doc](docs/nodes/append_palette.md) |
+| Insert Palette At Index | Insert a palette into another at a given position | [doc](docs/nodes/insert_palette_at.md) |
+| Mix Palettes | Blend two palettes color by color | [doc](docs/nodes/mix_palettes.md) |
 
-![color node](docs/create_color.png)
+### Output (`pixel_art/output`)
 
-## Color Mixer
+| Node | Description | Doc |
+|------|-------------|-----|
+| Color Preview | Render a color as an image with text overlay | [doc](docs/nodes/color_preview.md) |
+| Color to Formatted String | Convert a color to hex, rgb, hsl, css, etc. | [doc](docs/nodes/color_formatter.md) |
+| Palette View | Render a palette as a grid or strip image | [doc](docs/nodes/palette_view.md) |
+| Palette Formatter | Export a palette as formatted text | [doc](docs/nodes/palette_formatter.md) |
 
-Le concept central de ce pack de nodes.
+### IO (`pixel_art/io`)
 
-Mixe 2 couleurs pour en obtenir une 3e, avec interpolation RGB ou HSV.
+| Node | Description | Doc |
+|------|-------------|-----|
+| GIMP Palette Loader | Load `.gpl`, `.pal`, or `.aco` palette files | [doc](docs/nodes/gimp_palette_loader.md) |
 
-![color node](docs/mix_colors.png)
+### Image (`image/color`)
 
-# Roadmap
+| Node | Description | Doc |
+|------|-------------|-----|
+| Pixel Palette Extractor | Extract unique colors from an image | [doc](docs/nodes/pixel_palette_extractor.md) |
 
-See issue list.
-The next target are export colors and palettes manipulation.
+## Test Workflows
 
-# Inspiration
+Example workflows are provided in [`workflows/test/`](workflows/test/). Each one demonstrates a specific node or combination of nodes, and can be loaded directly into ComfyUI.
 
+## Contributing
 
-
-https://github.com/45uee/ComfyUI-Color_Transfer
-
-# Contribute
-
-
-## Setup
+### Setup
 
 ```bash
 pip install -r requirements-dev.txt
 lefthook install
 ```
 
-## Tests (BDD avec Mamba)
+### Tests (BDD with Mamba)
 
-Ce projet utilise [mamba](https://github.com/nestorsalceda/mamba) (equivalent Python de RSpec)
-avec [expects](https://expects.readthedocs.io/) pour les assertions.
+This project uses [mamba](https://github.com/nestorsalceda/mamba) (Python equivalent of RSpec) with [expects](https://expects.readthedocs.io/) for assertions.
 
 ```bash
-# Lancer tous les tests
+# Run all tests
 mamba spec/ --format=documentation
 
-# Avec coverage
+# With coverage
 mamba spec/ --enable-coverage --format=documentation
 ```
 
-Les tests sont lances automatiquement avant chaque commit via **lefthook**.
-Si un test echoue, le commit est bloque.
+Tests run automatically before each commit via **lefthook**. CI runs on Python 3.10, 3.11, and 3.12 via GitHub Actions.
 
-Une CI GitHub Actions tourne aussi sur chaque push et PR (Python 3.10/3.11/3.12).
+### Git flow
 
-## Git
-
-Ce repo utilise [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html).
-La branche par defaut est `develop`.
+The default branch is `develop`. See [docs/pr-conventions.md](docs/pr-conventions.md) for PR guidelines.
 
 ```bash
-# Nouvelle feature
-git flow feature start ma-feature
-
-# Quand c'est pret : push et PR vers develop
-git push -u origin feature/ma-feature
+git checkout develop && git pull
+git checkout -b feature/my-feature
+# work, commit, push
+git push -u origin feature/my-feature
+# open PR towards develop
 ```
 
-Voir `docs/pr-conventions.md` pour les conventions de messages de PR.
+## Inspiration
+
+- [ComfyUI-Color_Transfer](https://github.com/45uee/ComfyUI-Color_Transfer)
+- [Lospec](https://lospec.com/) — pixel art palette database
