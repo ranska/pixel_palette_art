@@ -63,6 +63,21 @@ Restart ComfyUI. The nodes will appear under the `pixel_art` category.
 |------|-------------|-----|
 | Pixel Palette Extractor | Extract unique colors from an image | [doc](docs/nodes/pixel_palette_extractor.md) |
 
+## Export Formats
+
+Le node **Palette Formatter** supporte les formats d'export suivants :
+
+| Format | Description | Exemple de sortie |
+|--------|-------------|-------------------|
+| `rgb` | Valeurs RGB texte | `255  0  0  Rouge` |
+| `hex` | Hexadécimal | `#ff0000` |
+| `gimp` | GIMP Palette `.gpl` | Header GIMP + `255  0  0  Rouge` |
+| `css` | Variables CSS custom properties | `--rouge: #ff0000;` |
+| `amiga` | Amiga OCS/ECS 12-bit (txt ou C) | `#F00` ou `0x0F00` |
+| `raw` | Données brutes | Représentation interne |
+
+Le système d'export est extensible via le pattern Registry. Voir `docs/architecture-registries.md`.
+
 ## Test Workflows
 
 Example workflows are provided in [`workflows/test/`](workflows/test/). Each one demonstrates a specific node or combination of nodes, and can be loaded directly into ComfyUI.

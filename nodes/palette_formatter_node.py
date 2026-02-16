@@ -14,7 +14,7 @@ class PaletteFormatterNode:
         return {
             "required": {
                 "palette": ("PIXEL_PALETTE",),
-                "format_type": (["rgb", "hex", "raw", "gimp"], {"default": "rgb"}),
+                "format_type": (["rgb", "hex", "raw", "gimp", "css", "amiga"], {"default": "rgb"}),
             },
             "optional": {
                 "separator": ("STRING", {"default": "\n"}),
