@@ -28,3 +28,6 @@ jobs:
 
       - name: Run tests
         run: mamba spec/ --enable-coverage --format=documentation
+
+      - name: Check coverage threshold
+        run: coverage report --fail-under=90
