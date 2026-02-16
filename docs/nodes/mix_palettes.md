@@ -4,6 +4,8 @@ Blends two palettes together color by color. Each color at position *i* in palet
 
 Supports RGB and HSV interpolation. The offset parameter allows shifting palette B before mixing.
 
+![Mix Palettes workflow](../screenshots/14_mix_palette_workflow.png)
+
 ## Inputs
 
 | Name | Type | Default | Description |

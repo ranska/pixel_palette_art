@@ -2,6 +2,8 @@
 
 Concatenates two palettes into one. All colors from palette B are appended after the colors of palette A.
 
+![Append Palette workflow](../screenshots/12_append_palette_workflow.png)
+
 ## Inputs
 
 | Name | Type | Default | Description |

@@ -2,6 +2,8 @@
 
 Extracts a contiguous range of colors from a palette, creating a new smaller palette. Both start and end indices are inclusive.
 
+![Copy Subset workflow](../screenshots/11_copy_subset_workflow.png)
+
 ## Inputs
 
 | Name | Type | Default | Description |
