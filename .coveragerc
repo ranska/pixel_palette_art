@@ -11,3 +11,6 @@ omit =
     setup.py
     demo_gradient.py
     test_node_import.py
+
+[report]
+fail_under = 90

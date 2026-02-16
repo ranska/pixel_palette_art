@@ -1,5 +1,8 @@
 # Pixel Palette Art
 
+![Tests](https://github.com/ranska/pixel_palette_art/actions/workflows/tests.yml/badge.svg?branch=develop)
+![Coverage](https://img.shields.io/badge/coverage->90%25-brightgreen)
+
 A set of ComfyUI custom nodes for pixel art color and palette manipulation.
 
 Create colors, mix them in RGB or HSV, build gradients, sort and edit palettes, then export to GIMP, hex, or any format you need.
@@ -84,6 +87,8 @@ mamba spec/ --format=documentation
 # With coverage
 mamba spec/ --enable-coverage --format=documentation
 ```
+
+Le seuil de coverage minimum est fixé à **90%**. La CI échoue si le coverage passe en dessous.
 
 Tests run automatically before each commit via **lefthook**. CI runs on Python 3.10, 3.11, and 3.12 via GitHub Actions.
 
